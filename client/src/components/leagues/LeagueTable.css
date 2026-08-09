@@ -1,0 +1,198 @@
+.league-table-section{
+
+    margin-top:70px;
+
+}
+
+.section-title{
+
+    color:white;
+
+    font-size:34px;
+
+    margin-bottom:25px;
+
+}
+
+.table-container{
+
+    background:#102417;
+
+    border-radius:20px;
+
+    overflow-x:auto;
+
+    border:1px solid #1f3b2a;
+
+}
+
+.league-table{
+
+    width:100%;
+
+    min-width:950px;
+
+    border-collapse:collapse;
+
+}
+
+.league-table thead{
+
+    background:#C8FF2E;
+
+}
+
+.league-table th{
+
+    padding:18px;
+
+    color:black;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    text-align:center;
+
+}
+
+.league-table td{
+
+    padding:18px;
+
+    color:white;
+
+    text-align:center;
+
+    border-bottom:1px solid #1d3d2a;
+
+    transition:.25s;
+
+}
+
+.league-table tbody tr:nth-child(odd){
+
+    background:#11271A;
+
+}
+
+.league-table tbody tr:nth-child(even){
+
+    background:#102417;
+
+}
+
+.league-table tbody tr:hover{
+
+    background:#183824;
+
+}
+
+.club-name{
+
+    text-align:left !important;
+
+    font-weight:600;
+
+    padding-left:28px !important;
+
+}
+
+.points{
+
+    color:#C8FF2E;
+
+    font-weight:700;
+
+    font-size:18px;
+
+}
+
+.league-table tbody tr:first-child{
+
+    border-left:5px solid #C8FF2E;
+
+}
+
+.league-table tbody tr:nth-child(2){
+
+    border-left:5px solid #6cff52;
+
+}
+
+.league-table tbody tr:nth-child(3){
+
+    border-left:5px solid #30b7ff;
+
+}
+
+.league-table tbody tr:last-child{
+
+    border-left:5px solid #ff4d4d;
+
+}
+
+.table-container::-webkit-scrollbar{
+
+    height:8px;
+
+}
+
+.table-container::-webkit-scrollbar-thumb{
+
+    background:#C8FF2E;
+
+    border-radius:10px;
+
+}
+.form-column{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:6px;
+
+}
+
+.form{
+
+    width:24px;
+
+    height:24px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    color:white;
+
+}
+
+.form.W{
+
+    background:#2ecc71;
+
+}
+
+.form.D{
+
+    background:#f1c40f;
+
+    color:black;
+
+}
+
+.form.L{
+
+    background:#e74c3c;
+
+}

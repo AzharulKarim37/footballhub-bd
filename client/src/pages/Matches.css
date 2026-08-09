@@ -1,0 +1,253 @@
+*{
+    box-sizing:border-box;
+}
+
+.matches-page{
+
+    min-height:100vh;
+
+    background:#07130D;
+
+    padding:45px 70px 80px;
+
+}
+
+/* ================= HERO ================= */
+
+.match-hero{
+
+    background:linear-gradient(135deg,#102417,#173624);
+
+    border:1px solid #23452c;
+
+    border-radius:22px;
+
+    padding:45px;
+
+    margin-bottom:40px;
+
+}
+
+.match-hero h1{
+
+    color:white;
+
+    font-size:46px;
+
+    margin-bottom:12px;
+
+}
+
+.match-hero p{
+
+    color:#bfd2c1;
+
+    font-size:18px;
+
+}
+
+/* ================= SEARCH ================= */
+
+.match-tools{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+    margin-bottom:35px;
+
+}
+
+.match-tools input{
+
+    flex:1;
+
+    height:55px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:12px;
+
+    padding:0 20px;
+
+    background:#102417;
+
+    border:1px solid #23452c;
+
+    color:white;
+
+    font-size:16px;
+
+}
+
+.match-tools input::placeholder{
+
+    color:#8ea592;
+
+}
+
+.match-tools input:focus{
+
+    border-color:#C8FF2E;
+
+}
+
+.match-tools select{
+
+    width:280px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:12px;
+
+    background:#102417;
+
+    border:1px solid #23452c;
+
+    color:white;
+
+    padding:0 15px;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+}
+
+.match-tools select:focus{
+
+    border-color:#C8FF2E;
+
+}
+
+/* ================= SECTION ================= */
+
+.match-section-title{
+
+    color:white;
+
+    font-size:30px;
+
+    margin:45px 0 25px;
+
+}
+
+/* ================= GRID ================= */
+
+.match-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+
+    gap:24px;
+
+}
+
+/* ================= EMPTY ================= */
+
+.no-matches{
+
+    margin-top:60px;
+
+    text-align:center;
+
+    color:#94a996;
+
+    font-size:20px;
+
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1100px){
+
+.match-tools{
+
+flex-direction:column;
+
+}
+
+.match-tools select{
+
+width:100%;
+
+height:55px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.matches-page{
+
+padding:30px 20px 60px;
+
+}
+
+.match-hero{
+
+padding:30px;
+
+}
+
+.match-hero h1{
+
+font-size:34px;
+
+}
+
+.match-hero p{
+
+font-size:16px;
+
+}
+
+.match-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.match-section-title{
+
+font-size:26px;
+
+}
+
+}
+
+@media(max-width:500px){
+
+.match-hero{
+
+text-align:center;
+
+}
+
+.match-hero h1{
+
+font-size:30px;
+
+}
+
+.match-tools input{
+
+font-size:15px;
+
+}
+
+.match-tools select{
+
+font-size:15px;
+
+}
+
+}

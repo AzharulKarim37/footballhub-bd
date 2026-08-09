@@ -1,0 +1,170 @@
+.auth-page {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 20px;
+  background: #f4f7f5;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 460px;
+  background: white;
+  padding: 40px;
+  border-radius: 18px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+.auth-brand {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.auth-brand img {
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+  margin-bottom: 15px;
+}
+
+.auth-brand h1 {
+  margin: 0;
+  font-size: 30px;
+  color: #123d2a;
+}
+
+.auth-brand p {
+  margin-top: 8px;
+  color: #777;
+  font-size: 14px;
+}
+
+.auth-form {
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  border: 1px solid #d7ddd9;
+  border-radius: 9px;
+  font-size: 15px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #176b43;
+  box-shadow: 0 0 0 3px rgba(23, 107, 67, 0.1);
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 65px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: #176b43;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 0 25px;
+  font-size: 13px;
+}
+
+.auth-options a {
+  color: #176b43;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.remember-me {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: #666;
+}
+
+.auth-submit {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 9px;
+  background: #176b43;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.auth-submit:hover {
+  background: #0f5232;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 25px 0;
+  color: #aaa;
+  font-size: 12px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #ddd;
+}
+
+.auth-switch {
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+}
+
+.auth-switch a {
+  margin-left: 5px;
+  color: #176b43;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (max-width: 500px) {
+  .auth-container {
+    padding: 30px 22px;
+  }
+
+  .auth-brand h1 {
+    font-size: 26px;
+  }
+}

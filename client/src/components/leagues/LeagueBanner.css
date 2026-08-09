@@ -1,0 +1,95 @@
+.league-banner{
+    display:flex;
+    align-items:center;
+    gap:40px;
+
+    padding:40px;
+
+    background:#102417;
+
+    border:1px solid #23452c;
+
+    border-radius:18px;
+
+    margin-bottom:35px;
+}
+
+.league-banner-logo{
+
+    width:140px;
+
+    height:140px;
+
+    object-fit:contain;
+
+    background:white;
+
+    border-radius:50%;
+
+    padding:20px;
+
+}
+
+.league-banner-right{
+
+    flex:1;
+
+}
+
+.league-banner-right h1{
+
+    color:white;
+
+    font-size:42px;
+
+    margin-bottom:12px;
+
+}
+
+.league-banner-right p{
+
+    color:#c6d4c7;
+
+    line-height:1.8;
+
+    margin-bottom:25px;
+
+}
+
+.league-banner-info{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:18px;
+
+}
+
+.league-banner-info div{
+
+    background:#08140d;
+
+    padding:18px;
+
+    border-radius:12px;
+
+}
+
+.league-banner-info span{
+
+    display:block;
+
+    color:#8ea592;
+
+    margin-bottom:8px;
+
+}
+
+.league-banner-info strong{
+
+    color:white;
+
+    font-size:18px;
+
+}

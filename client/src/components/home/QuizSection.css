@@ -1,0 +1,320 @@
+/* =========================
+   QUIZ HOME SECTION
+========================= */
+
+.quiz-home-section {
+  width: 100%;
+
+  padding: 80px 0;
+
+  background: #07130D;
+}
+
+
+/* =========================
+   CONTAINER
+========================= */
+
+.quiz-home-container {
+  width: 90%;
+
+  max-width: 1200px;
+
+  margin: 0 auto;
+
+  min-height: 350px;
+
+  padding: 50px 60px;
+
+  box-sizing: border-box;
+
+  border-radius: 24px;
+
+  background:
+    radial-gradient(
+      circle at right,
+      rgba(200, 255, 46, 0.12),
+      transparent 40%
+    ),
+    #0d2117;
+
+  border: 1px solid #1f3b2a;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 50px;
+
+  overflow: hidden;
+}
+
+
+/* =========================
+   CONTENT
+========================= */
+
+.quiz-home-content {
+  flex: 1;
+
+  max-width: 650px;
+}
+
+.quiz-home-label {
+  margin: 0 0 14px;
+
+  color: #C8FF2E;
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.8px;
+}
+
+.quiz-home-content h2 {
+  margin: 0;
+
+  color: white;
+
+  font-size: 44px;
+
+  line-height: 1.15;
+}
+
+.quiz-home-content h2 span {
+  color: #C8FF2E;
+}
+
+.quiz-home-description {
+  margin: 22px 0 28px;
+
+  max-width: 600px;
+
+  color: #b8c6bd;
+
+  font-size: 16px;
+
+  line-height: 1.7;
+}
+
+
+/* =========================
+   BUTTON
+========================= */
+
+.quiz-home-btn {
+  display: inline-block;
+
+  padding: 14px 25px;
+
+  background: #C8FF2E;
+
+  color: #07130D;
+
+  text-decoration: none;
+
+  border-radius: 10px;
+
+  font-size: 16px;
+
+  font-weight: 800;
+
+  transition: 0.25s;
+}
+
+.quiz-home-btn:hover {
+  transform: translateY(-3px);
+
+  background: #d7ff5c;
+
+  box-shadow:
+    0 8px 25px rgba(200, 255, 46, 0.2);
+}
+
+
+/* =========================
+   VISUAL
+========================= */
+
+.quiz-home-visual {
+  width: 320px;
+
+  min-height: 250px;
+
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+
+/* =========================
+   FOOTBALL
+========================= */
+
+.quiz-ball {
+  width: 170px;
+
+  height: 170px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  border: 1px solid rgba(200, 255, 46, 0.25);
+
+  font-size: 95px;
+
+  box-shadow:
+    0 0 60px rgba(200, 255, 46, 0.08);
+}
+
+
+/* =========================
+   SMALL CARD
+========================= */
+
+.quiz-card-small {
+  position: absolute;
+
+  right: 0;
+
+  bottom: 10px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 13px 16px;
+
+  background: white;
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.quiz-check {
+  width: 30px;
+
+  height: 30px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #176b43;
+
+  color: white;
+
+  font-weight: 800;
+}
+
+.quiz-card-small div {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.quiz-card-small strong {
+  color: #123d2a;
+
+  font-size: 13px;
+}
+
+.quiz-card-small small {
+  color: #777;
+
+  font-size: 11px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 800px) {
+
+  .quiz-home-container {
+    padding: 40px 30px;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+  .quiz-home-content h2 {
+    font-size: 36px;
+  }
+
+  .quiz-home-visual {
+    width: 100%;
+
+    min-height: 220px;
+  }
+
+  .quiz-card-small {
+    right: 10%;
+  }
+}
+
+
+@media (max-width: 500px) {
+
+  .quiz-home-section {
+    padding: 50px 0;
+  }
+
+  .quiz-home-container {
+    width: 92%;
+
+    padding: 30px 22px;
+  }
+
+  .quiz-home-content h2 {
+    font-size: 30px;
+  }
+
+  .quiz-home-description {
+    font-size: 14px;
+  }
+
+  .quiz-home-visual {
+    min-height: 190px;
+  }
+
+  .quiz-ball {
+    width: 130px;
+
+    height: 130px;
+
+    font-size: 70px;
+  }
+
+  .quiz-card-small {
+    right: 0;
+
+    bottom: 0;
+  }
+}

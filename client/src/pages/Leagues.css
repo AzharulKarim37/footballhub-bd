@@ -1,0 +1,19 @@
+.leagues-page{
+
+    min-height:100vh;
+
+    background:#07130d;
+
+    padding:120px 8%;
+
+}
+
+.league-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+
+    gap:35px;
+
+}
