@@ -5,6 +5,7 @@ import Navbar from "./components/layout/Navbar";
 import Home from "./pages/Home";
 import Matches from "./pages/Matches";
 import Leagues from "./pages/Leagues";
+import LeagueDetails from "./pages/LeagueDetails";
 import Teams from "./pages/Teams";
 import Players from "./pages/Players";
 import News from "./pages/News";
@@ -35,6 +36,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/matches" element={<Matches />} />
         <Route path="/leagues" element={<Leagues />} />
+        <Route path="/leagues/:leagueId" element={<LeagueDetails />} />
         <Route path="/teams" element={<Teams />} />
         <Route path="/players" element={<Players />} />
         <Route path="/news" element={<News />} />
