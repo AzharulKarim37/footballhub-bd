@@ -84,13 +84,13 @@ function Navbar() {
         {isAuthenticated ? (
           <>
 
-            <div className="user-info">
+            <a className="user-info">
               <User size={18} />
 
               <span>
                 {user?.name}
               </span>
-            </div>
+            </a>
 
             <button
               className="logout-btn"
