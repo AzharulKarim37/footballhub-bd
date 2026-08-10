@@ -36,8 +36,8 @@ function Quiz() {
           : Promise.resolve({ data: { attempts: [] } })
       ]);
 
-      setQuizzes(quizzesRes.data || []);
-      setMyAttempts(attemptsRes.data.attempts || []);
+      setQuizzes(quizzesRes.data?.quizzes || quizzesRes.data || []);
+      setMyAttempts(attemptsRes.data?.attempts || []);
     } catch (err) {
       console.error("Could not fetch quizzes", err);
     } finally {

@@ -13,6 +13,7 @@ import News from "./pages/News";
 import Quiz from "./pages/Quiz";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Profile from "./pages/Profile";
 
 import MyQuizAttempts from "./pages/MyQuizAttempts";
 import QuizLeaderboard from "./pages/QuizLeaderboard";
@@ -49,6 +50,7 @@ function App() {
         {/* AUTH */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/profile" element={<Profile />} />
 
         {/* ADMIN */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
