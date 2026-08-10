@@ -84,7 +84,7 @@ function Navbar() {
         {isAuthenticated ? (
           <>
 
-            <Link to="/profile" className="user-info">
+            <Link to={user?.role === "admin" ? "/admin/dashboard" : "/profile"} className="user-info">
               <User size={18} />
 
               <span>
