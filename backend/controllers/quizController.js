@@ -1388,7 +1388,8 @@ export const completeQuizAttempt = async (
         score = ?,
         correct_answers = ?,
         total_questions = ?,
-        completed_at = NOW()
+        completed_at = NOW(),
+        user_answers_json = ?
       WHERE quiz_id = ?
         AND user_id = ?
         AND completed_at IS NULL
@@ -1397,6 +1398,7 @@ export const completeQuizAttempt = async (
         score,
         correctAnswers,
         totalQuestions,
+        JSON.stringify(answers),
         quizId,
         userId,
       ]
@@ -1488,7 +1490,18 @@ export const getMyQuizAttempts = async (
         qa.completed_at,
 
         qa.reward_sent,
-        qa.reward_sent_at
+        qa.reward_sent_at,
+
+        (
+          SELECT COUNT(*) + 1 
+          FROM quiz_attempts qa2 
+          WHERE qa2.quiz_id = qa.quiz_id 
+            AND qa2.completed_at IS NOT NULL 
+            AND (
+              qa2.score > qa.score 
+              OR (qa2.score = qa.score AND qa2.completed_at < qa.completed_at)
+            )
+        ) AS user_rank
 
       FROM quiz_attempts qa
 
@@ -2075,5 +2088,61 @@ export const sendQuizRewards = async (
         "Failed to send quiz rewards",
       error: error.message,
     });
+  }
+};
+
+/*
+========================================================
+USER - GET ATTEMPT DETAILS
+========================================================
+*/
+
+export const getQuizAttemptDetails = async (req, res) => {
+  try {
+    const { quizId, attemptId } = req.params;
+    const userId = req.user.id;
+
+    // Get the attempt info
+    const [attempts] = await db.query(
+      `SELECT id, quiz_id, score, correct_answers, total_questions, started_at, completed_at, user_answers_json
+       FROM quiz_attempts
+       WHERE id = ? AND quiz_id = ? AND user_id = ?`,
+      [attemptId, quizId, userId]
+    );
+
+    if (attempts.length === 0) {
+      return res.status(404).json({ message: 'Attempt not found' });
+    }
+
+    const attempt = attempts[0];
+
+    // Get the quiz questions and correct answers
+    const [questions] = await db.query(
+      `SELECT id, question as question_text, option_a, option_b, option_c, option_d, correct_answer
+       FROM quiz_questions
+       WHERE quiz_id = ?
+       ORDER BY question_order ASC, id ASC`,
+      [quizId]
+    );
+
+    const formattedQuestions = questions.map(q => ({
+      id: q.id,
+      question_text: q.question_text,
+      correct_answer: q.correct_answer,
+      options_json: {
+        A: q.option_a,
+        B: q.option_b,
+        C: q.option_c,
+        D: q.option_d
+      }
+    }));
+
+    return res.status(200).json({
+      attempt,
+      questions: formattedQuestions
+    });
+  } catch (error) {
+    console.error('Get attempt details error:', error);
+    return res.status(500).json({ message: 'Failed to load attempt details', error: error.message });
   }
 };

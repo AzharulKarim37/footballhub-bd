@@ -187,3 +187,93 @@ export const deleteLeague = async (req, res) => {
     res.status(500).json({ message: "Server error deleting league" });
   }
 };
+
+/* ==========================================
+   STANDINGS CRUD
+========================================== */
+
+export const addStanding = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const { position, club, played, won, drawn, lost, gf, ga, gd, points, form } = req.body;
+    await db.query(
+      `INSERT INTO league_standings (league_id, position, club, played, won, drawn, lost, gf, ga, gd, points, form) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [id, position, club, played, won, drawn, lost, gf, ga, gd, points, Array.isArray(form) ? form.join(',') : form]
+    );
+    res.status(201).json({ message: 'Standing added' });
+  } catch (error) {
+    console.error('Error adding standing:', error);
+    res.status(500).json({ message: 'Server error adding standing' });
+  }
+};
+
+export const updateStanding = async (req, res) => {
+  const { standingId } = req.params;
+  try {
+    const { position, club, played, won, drawn, lost, gf, ga, gd, points, form } = req.body;
+    await db.query(
+      `UPDATE league_standings SET position=?, club=?, played=?, won=?, drawn=?, lost=?, gf=?, ga=?, gd=?, points=?, form=? WHERE id=?`,
+      [position, club, played, won, drawn, lost, gf, ga, gd, points, Array.isArray(form) ? form.join(',') : form, standingId]
+    );
+    res.json({ message: 'Standing updated' });
+  } catch (error) {
+    console.error('Error updating standing:', error);
+    res.status(500).json({ message: 'Server error updating standing' });
+  }
+};
+
+export const deleteStanding = async (req, res) => {
+  const { standingId } = req.params;
+  try {
+    await db.query('DELETE FROM league_standings WHERE id=?', [standingId]);
+    res.json({ message: 'Standing deleted' });
+  } catch (error) {
+    console.error('Error deleting standing:', error);
+    res.status(500).json({ message: 'Server error deleting standing' });
+  }
+};
+
+/* ==========================================
+   TOP SCORERS CRUD
+========================================== */
+
+export const addTopScorer = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const { rank_no, player, club, goals } = req.body;
+    await db.query(
+      `INSERT INTO top_scorers (league_id, rank_no, player, club, goals) VALUES (?, ?, ?, ?, ?)`,
+      [id, rank_no, player, club, goals]
+    );
+    res.status(201).json({ message: 'Scorer added' });
+  } catch (error) {
+    console.error('Error adding scorer:', error);
+    res.status(500).json({ message: 'Server error adding scorer' });
+  }
+};
+
+export const updateTopScorer = async (req, res) => {
+  const { scorerId } = req.params;
+  try {
+    const { rank_no, player, club, goals } = req.body;
+    await db.query(
+      `UPDATE top_scorers SET rank_no=?, player=?, club=?, goals=? WHERE id=?`,
+      [rank_no, player, club, goals, scorerId]
+    );
+    res.json({ message: 'Scorer updated' });
+  } catch (error) {
+    console.error('Error updating scorer:', error);
+    res.status(500).json({ message: 'Server error updating scorer' });
+  }
+};
+
+export const deleteTopScorer = async (req, res) => {
+  const { scorerId } = req.params;
+  try {
+    await db.query('DELETE FROM top_scorers WHERE id=?', [scorerId]);
+    res.json({ message: 'Scorer deleted' });
+  } catch (error) {
+    console.error('Error deleting scorer:', error);
+    res.status(500).json({ message: 'Server error deleting scorer' });
+  }
+};

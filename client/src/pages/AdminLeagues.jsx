@@ -211,6 +211,9 @@ function AdminLeagues() {
                       <td>{l.champion}</td>
                       <td>
                         <div className="action-btns">
+                          <Link to={`/admin/leagues/${l.id}`} className="btn-manage" style={{ background: '#176b43', color: 'white', padding: '6px 12px', borderRadius: '6px', textDecoration: 'none', fontSize: '13px', fontWeight: 'bold' }}>
+                            Manage Details
+                          </Link>
                           <button className="btn-edit" onClick={() => handleOpenModal(l)}>
                             Edit
                           </button>

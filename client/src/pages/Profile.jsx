@@ -88,16 +88,23 @@ function Profile() {
           ) : (
             <div className="profile-quizzes-grid">
               {attempts.map((attempt) => (
-                <div key={attempt.id} className="profile-quiz-card">
-                  <h4>{attempt.title}</h4>
-                  <p className="quiz-meta">Difficulty: {attempt.difficulty}</p>
-                  <div className="quiz-score-box">
-                    Score: <strong>{attempt.score}/{attempt.total_questions}</strong>
+                <Link to={`/attempt/${attempt.quiz_id}/${attempt.id}`} key={attempt.id} className="profile-quiz-card-link" style={{textDecoration: 'none', color: 'inherit'}}>
+                  <div className="profile-quiz-card">
+                    <h4>{attempt.title}</h4>
+                    <p className="quiz-meta">Difficulty: {attempt.difficulty}</p>
+                    {attempt.leaderboard_published === 1 && (
+                      <p className="quiz-meta" style={{color: '#176b43', fontWeight: 'bold'}}>
+                        Leaderboard Rank: #{attempt.user_rank}
+                      </p>
+                    )}
+                    <div className="quiz-score-box">
+                      Score: <strong>{attempt.score}/{attempt.total_questions}</strong>
+                    </div>
+                    <div className="quiz-date">
+                      Completed: {new Date(attempt.completed_at).toLocaleDateString()}
+                    </div>
                   </div>
-                  <div className="quiz-date">
-                    Completed: {new Date(attempt.completed_at).toLocaleDateString()}
-                  </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}

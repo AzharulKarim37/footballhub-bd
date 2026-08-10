@@ -22,6 +22,7 @@ import {
   startQuizAttempt,
   completeQuizAttempt,
   getMyQuizAttempts,
+  getQuizAttemptDetails,
 
   getQuizLeaderboard,
   getQuizAttempts,
@@ -64,6 +65,13 @@ router.get(
   "/my-attempts",
   authenticate,
   getMyQuizAttempts
+);
+
+// Get specific attempt details (for review)
+router.get(
+  "/:quizId/attempt/:attemptId",
+  authenticate,
+  getQuizAttemptDetails
 );
 
 // Start a quiz attempt
