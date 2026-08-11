@@ -2010,7 +2010,7 @@ function AdminQuizzes() {
 
                                 <tr
                                   key={
-                                    attempt.id
+                                    attempt.attempt_id || attempt.id
                                   }
                                 >
 

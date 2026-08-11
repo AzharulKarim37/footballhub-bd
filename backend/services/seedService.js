@@ -195,6 +195,7 @@ export const initAndSeedDatabase = async () => {
         reward_sent_at DATETIME DEFAULT NULL,
         started_at DATETIME DEFAULT NULL,
         completed_at DATETIME DEFAULT NULL,
+        user_answers_json JSON DEFAULT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);

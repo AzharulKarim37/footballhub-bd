@@ -13,14 +13,17 @@ import News from "./pages/News";
 import Quiz from "./pages/Quiz";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Profile from "./pages/Profile";
 
 import MyQuizAttempts from "./pages/MyQuizAttempts";
 import QuizLeaderboard from "./pages/QuizLeaderboard";
+import AttemptDetails from "./pages/AttemptDetails";
 
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminQuizzes from "./pages/AdminQuizzes";
 import AdminMatches from "./pages/AdminMatches";
 import AdminLeagues from "./pages/AdminLeagues";
+import AdminLeagueDetails from "./pages/AdminLeagueDetails";
 import AdminPlayers from "./pages/AdminPlayers";
 
 function App() {
@@ -45,16 +48,19 @@ function App() {
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/my-quiz-attempts" element={<MyQuizAttempts />} />
         <Route path="/quiz/:quizId/leaderboard" element={<QuizLeaderboard />} />
+        <Route path="/attempt/:quizId/:attemptId" element={<AttemptDetails />} />
 
         {/* AUTH */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/profile" element={<Profile />} />
 
         {/* ADMIN */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/quizzes" element={<AdminQuizzes />} />
         <Route path="/admin/matches" element={<AdminMatches />} />
         <Route path="/admin/leagues" element={<AdminLeagues />} />
+        <Route path="/admin/leagues/:leagueId" element={<AdminLeagueDetails />} />
         <Route path="/admin/players" element={<AdminPlayers />} />
 
         {/* 404 */}

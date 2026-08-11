@@ -1,0 +1,204 @@
+/* =========================================================
+   ADMIN LEAGUE DETAILS - PREMIUM UI
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+.league-details-page {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #f4f8f6 0%, #e8f0eb 100%);
+  min-height: 100vh;
+  color: #1a1a1a;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.league-details-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(15px);
+  padding: 20px 30px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+}
+
+.league-details-title {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.league-details-title img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: white;
+  padding: 5px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.league-details-title h1 {
+  margin: 0 0 5px;
+  font-size: 28px;
+  color: #102e21;
+  font-weight: 800;
+}
+
+.league-details-title span {
+  font-size: 14px;
+  color: #176b43;
+  font-weight: 600;
+  background: #e7f3ec;
+  padding: 4px 10px;
+  border-radius: 10px;
+}
+
+.btn-back {
+  background: white;
+  border: 1px solid #dce5df;
+  padding: 10px 18px;
+  border-radius: 10px;
+  color: #444;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-back:hover {
+  background: #102e21;
+  color: white;
+  border-color: #102e21;
+}
+
+.panels-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.admin-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.panel-header h2 {
+  margin: 0;
+  color: #102e21;
+  font-size: 20px;
+}
+
+.btn-add {
+  background: linear-gradient(135deg, #176b43 0%, #104f31 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(23, 107, 67, 0.2);
+  transition: transform 0.2s;
+}
+
+.btn-add:hover {
+  transform: translateY(-2px);
+}
+
+.admin-list-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-list-table th, .admin-list-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #edf2f0;
+}
+
+.admin-list-table th {
+  font-size: 13px;
+  color: #66756e;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.admin-list-table td {
+  font-size: 14px;
+  color: #2b3a32;
+  font-weight: 500;
+}
+
+.admin-list-table tr:last-child td {
+  border-bottom: none;
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+/* Modal styles inherited from AdminLeagues/Quizzes but specialized */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+
+.modal-content-large {
+  background: white; border-radius: 20px; padding: 30px; width: 100%; max-width: 600px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+.modal-content-large h2 {
+  margin: 0 0 20px; color: #102e21;
+}
+
+.form-group label {
+  display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; color: #444;
+}
+
+.form-group input {
+  width: 100%; padding: 10px 14px; border: 2px solid #e8edea; border-radius: 8px;
+  box-sizing: border-box; font-family: inherit; margin-bottom: 15px;
+}
+
+.form-group input:focus {
+  outline: none; border-color: #176b43;
+}
+
+.modal-actions {
+  display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;
+}
+
+.modal-actions button {
+  padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none;
+}
+
+.modal-actions .btn-cancel {
+  background: #f0f0f0; color: #555;
+}
+
+.modal-actions .btn-save {
+  background: #176b43; color: white;
+}
+
+@media (max-width: 1024px) {
+  .panels-container { grid-template-columns: 1fr; }
+}
