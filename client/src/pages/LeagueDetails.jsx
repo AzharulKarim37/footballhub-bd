@@ -15,18 +15,22 @@ function LeagueDetails() {
   const { leagueId } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedSeason, setSelectedSeason] = useState("");
 
   useEffect(() => {
     setLoading(true);
-    fetchLeagueById(leagueId)
+    fetchLeagueById(leagueId, selectedSeason)
       .then((res) => {
         setData(res);
+        if (!selectedSeason && res.currentSeason) {
+          setSelectedSeason(res.currentSeason);
+        }
         setLoading(false);
       })
       .catch(() => {
         setLoading(false);
       });
-  }, [leagueId]);
+  }, [leagueId, selectedSeason]);
 
   if (loading) {
     return (
@@ -66,12 +70,17 @@ function LeagueDetails() {
     );
   }
 
-  const { league, standings, topScorers, recentMatches, upcomingFixtures } = data;
+  const { league, standings, topScorers, recentMatches, upcomingFixtures, availableSeasons, currentSeason } = data;
 
   return (
     <div className="league-details-page">
       {/* Banner */}
-      <LeagueBanner league={league} />
+      <LeagueBanner 
+        league={league} 
+        availableSeasons={availableSeasons} 
+        currentSeason={currentSeason} 
+        onSeasonChange={(s) => setSelectedSeason(s)} 
+      />
 
       {/* Statistics */}
       <LeagueStats league={league} />

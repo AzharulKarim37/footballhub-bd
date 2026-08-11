@@ -67,6 +67,9 @@ function AdminDashboard() {
           <Link to="/admin/quizzes" className="admin-nav-link">
             📝 Quiz Management
           </Link>
+          <Link to="/admin/rewards" className="admin-nav-link">
+            🎁 Reward Claims
+          </Link>
           <Link to="/" className="admin-nav-link">
             🌐 View Website
           </Link>

@@ -35,6 +35,8 @@ function AdminQuizzes() {
 
   const [showAttempts, setShowAttempts] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [showRewardsModal, setShowRewardsModal] = useState(false);
+  const [rewardFields, setRewardFields] = useState(["Full Name", "Phone Number", "Shipping Address"]);
 
   const [quizForm, setQuizForm] = useState({
     title: "",
@@ -1008,59 +1010,41 @@ function AdminQuizzes() {
   // SEND REWARDS
   // ============================================================
 
-  const handleSendRewards = async () => {
+  const handleSendRewards = () => {
     if (!selectedQuiz) return;
+    setRewardFields(["Full Name", "Phone Number", "Shipping Address"]);
+    setShowRewardsModal(true);
+  };
 
-    if (
-      !window.confirm(
-        "Send rewards to the top users of this quiz?"
-      )
-    ) {
-      return;
-    }
+  const submitSendRewards = async () => {
+    if (!selectedQuiz) return;
 
     try {
       setSendingRewards(true);
       clearMessages();
-
       const token = getToken();
 
-      const response = await fetch(
-        `${API_URL}/${selectedQuiz.id}/rewards`,
-        {
-          method: "POST",
-
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_URL}/${selectedQuiz.id}/rewards`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ form_fields: rewardFields })
+      });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message ||
-            "Failed to send rewards"
-        );
+        throw new Error(data.message || "Failed to send rewards");
       }
 
-      setMessage(
-        data.message ||
-          "Rewards sent successfully."
-      );
-
+      setMessage(data.message || "Rewards sent successfully.");
+      setShowRewardsModal(false);
       await loadAttempts();
     } catch (error) {
-      console.error(
-        "Send rewards error:",
-        error
-      );
-
-      setError(
-        error.message ||
-          "Failed to send rewards"
-      );
+      console.error("Send rewards error:", error);
+      setError(error.message || "Failed to send rewards");
     } finally {
       setSendingRewards(false);
     }
@@ -2443,6 +2427,58 @@ function AdminQuizzes() {
 
         </div>
 
+      )}
+
+      {/* ==========================================
+          REWARDS CONFIG MODAL
+      ========================================== */}
+      {showRewardsModal && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{maxWidth: '500px'}}>
+            <div className="modal-header">
+              <h2>Configure Reward Fields</h2>
+              <button type="button" onClick={() => setShowRewardsModal(false)}>×</button>
+            </div>
+            
+            <p style={{margin: '15px 0', color: '#555'}}>Define the fields the winners must fill out to claim their reward:</p>
+            
+            <div style={{marginBottom: '20px'}}>
+              {rewardFields.map((field, index) => (
+                <div key={index} style={{display: 'flex', gap: '10px', marginBottom: '10px'}}>
+                  <input
+                    type="text"
+                    value={field}
+                    onChange={(e) => {
+                      const newFields = [...rewardFields];
+                      newFields[index] = e.target.value;
+                      setRewardFields(newFields);
+                    }}
+                    style={{flex: 1, padding: '10px', border: '1px solid #ccc', borderRadius: '4px'}}
+                    placeholder="e.g. Full Name"
+                  />
+                  <button type="button" onClick={() => {
+                    const newFields = rewardFields.filter((_, i) => i !== index);
+                    setRewardFields(newFields);
+                  }} style={{background: '#ff4d4d', color: 'white', border: 'none', borderRadius: '4px', padding: '0 15px', cursor: 'pointer', fontWeight: 'bold'}}>
+                    X
+                  </button>
+                </div>
+              ))}
+              <button type="button" onClick={() => setRewardFields([...rewardFields, ""])} style={{background: '#006b3c', color: 'white', border: 'none', borderRadius: '4px', padding: '10px 15px', cursor: 'pointer', width: '100%', marginTop: '5px'}}>
+                + Add Field
+              </button>
+            </div>
+
+            <div className="modal-buttons" style={{display: 'flex', justifyContent: 'flex-end', gap: '10px'}}>
+              <button type="button" className="cancel-button" onClick={() => setShowRewardsModal(false)}>
+                Cancel
+              </button>
+              <button type="button" className="save-button" onClick={submitSendRewards} disabled={sendingRewards}>
+                {sendingRewards ? "Sending..." : "Send Rewards"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
     </div>

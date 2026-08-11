@@ -1,6 +1,6 @@
 import "./LeagueBanner.css";
 
-function LeagueBanner({ league }) {
+function LeagueBanner({ league, availableSeasons, currentSeason, onSeasonChange }) {
   return (
     <div className="league-banner">
 
@@ -27,9 +27,29 @@ function LeagueBanner({ league }) {
             <strong>{league.country}</strong>
           </div>
 
-          <div>
+          <div className="season-selector-wrapper">
             <span>Season</span>
-            <strong>{league.season}</strong>
+            <strong>
+              <select 
+                value={currentSeason || league.season}
+                onChange={(e) => onSeasonChange && onSeasonChange(e.target.value)}
+                style={{
+                  background: 'transparent', 
+                  color: 'inherit', 
+                  border: 'none', 
+                  outline: 'none', 
+                  fontWeight: 'inherit', 
+                  fontSize: 'inherit',
+                  cursor: 'pointer'
+                }}
+              >
+                {availableSeasons && availableSeasons.length > 0 ? (
+                  availableSeasons.map(s => <option key={s} value={s} style={{color: 'black'}}>{s}</option>)
+                ) : (
+                  <option value={league.season} style={{color: 'black'}}>{league.season}</option>
+                )}
+              </select>
+            </strong>
           </div>
 
           <div>

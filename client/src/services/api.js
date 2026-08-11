@@ -62,9 +62,10 @@ export const fetchLeagues = async () => {
 /**
  * Fetch single league details (league stats, standings, top scorers, recent matches, upcoming fixtures)
  */
-export const fetchLeagueById = async (leagueId) => {
+export const fetchLeagueById = async (leagueId, season = null) => {
   try {
-    const response = await api.get(`/leagues/${leagueId}`);
+    const url = season ? `/leagues/${leagueId}?season=${season}` : `/leagues/${leagueId}`;
+    const response = await api.get(url);
     return response.data;
   } catch (error) {
     console.warn(`⚠️ API fetchLeagueById(${leagueId}) failed, using fallback static data.`, error.message);
