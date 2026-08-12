@@ -620,16 +620,16 @@ thead th {
   border-bottom: 2px solid #eaf0ed;
 }
 
-tbody td {
+.admin-quizzes-page tbody td {
   padding: 16px;
   font-size: 14px;
   color: #444;
   border-bottom: 1px solid #f0f4f2;
 }
 
-tbody tr:last-child td { border-bottom: none; }
-tbody tr:hover td { background: #fdfdfd; }
-tbody td strong { color: #176b43; font-weight: 700; font-size: 15px; }
+.admin-quizzes-page tbody tr:last-child td { border-bottom: none; }
+.admin-quizzes-page tbody tr:hover td { background: #fdfdfd; }
+.admin-quizzes-page tbody td strong { color: #176b43; font-weight: 700; font-size: 15px; }
 
 /* =========================================================
    MODAL

@@ -126,6 +126,27 @@
   border-collapse: collapse;
 }
 
+/* MATCH STATUS BADGES */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.status-badge.UPCOMING {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+.status-badge.FT {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+.status-badge.LIVE {
+  background: #ffebee;
+  color: #c62828;
+}
+
 .admin-list-table th, .admin-list-table td {
   padding: 12px;
   text-align: left;
@@ -164,6 +185,8 @@
 .modal-content-large {
   background: white; border-radius: 20px; padding: 30px; width: 100%; max-width: 600px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modal-content-large h2 {
@@ -201,4 +224,18 @@
 
 @media (max-width: 1024px) {
   .panels-container { grid-template-columns: 1fr; }
+}
+
+
+/* UCL SPECIFIC FORMATTING */
+.admin-list-table tr.ucl-ro16 td:first-child {
+  border-left: 4px solid #176b43;
+}
+
+.admin-list-table tr.ucl-playoff td:first-child {
+  border-left: 4px solid #f39c12;
+}
+
+.admin-list-table tr.ucl-eliminated td:first-child {
+  border-left: 4px solid #e74c3c;
 }

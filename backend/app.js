@@ -11,6 +11,7 @@ import leagueRoutes from "./routes/leagueRoutes.js";
 import matchRoutes from "./routes/matchRoutes.js";
 import teamRoutes from "./routes/teamRoutes.js";
 import playerRoutes from "./routes/playerRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
 
 dotenv.config();
 
@@ -57,6 +58,7 @@ app.use("/api/leagues", leagueRoutes);
 app.use("/api/matches", matchRoutes);
 app.use("/api/teams", teamRoutes);
 app.use("/api/players", playerRoutes);
+app.use("/api/messages", messageRoutes);
 
 // ======================================================
 // HOME

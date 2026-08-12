@@ -12,7 +12,6 @@ function Quiz() {
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   
   // Quiz progress state
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [scoreData, setScoreData] = useState(null);
@@ -76,7 +75,6 @@ function Quiz() {
       });
       
       setSelectedQuiz({ ...res.data.quiz, questions: res.data.questions || [] });
-      setCurrentQuestionIndex(0);
       setUserAnswers({});
       setIsSubmitted(false);
       setScoreData(null);
@@ -97,41 +95,36 @@ function Quiz() {
     }
   };
 
-  const handleAnswerSelect = (optionKey) => {
+  const handleAnswerSelect = (questionId, optionKey) => {
     if (isSubmitted) return;
-    const currentQ = selectedQuiz.questions[currentQuestionIndex];
     setUserAnswers({
       ...userAnswers,
-      [currentQ.id]: optionKey,
+      [questionId]: optionKey,
     });
   };
 
-  const handleNext = async () => {
+  const handleSubmitAttempt = async () => {
     if (!selectedQuiz || !selectedQuiz.questions) return;
-    if (currentQuestionIndex < selectedQuiz.questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      // Submit the answers to backend
-      const token = getToken();
-      const answersArray = Object.keys(userAnswers).map(qId => ({
-        question_id: qId,
-        answer: userAnswers[qId]
-      }));
+    // Submit the answers to backend
+    const token = getToken();
+    const answersArray = Object.keys(userAnswers).map(qId => ({
+      question_id: qId,
+      answer: userAnswers[qId]
+    }));
 
-      try {
-        const res = await axios.post(`${API_BASE}/quizzes/${selectedQuiz.id}/complete`, {
-          answers: answersArray
-        }, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+    try {
+      const res = await axios.post(`${API_BASE}/quizzes/${selectedQuiz.id}/complete`, {
+        answers: answersArray
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-        setIsSubmitted(true);
-        setScoreData(res.data.attempt);
-        // Refresh attempts list so it shows as completed
-        fetchQuizzesAndAttempts();
-      } catch (err) {
-        alert("Failed to complete quiz. " + (err.response?.data?.message || ""));
-      }
+      setIsSubmitted(true);
+      setScoreData(res.data.attempt);
+      // Refresh attempts list so it shows as completed
+      fetchQuizzesAndAttempts();
+    } catch (err) {
+      alert("Failed to complete quiz. " + (err.response?.data?.message || ""));
     }
   };
 
@@ -166,7 +159,7 @@ function Quiz() {
                         <h3>{quiz.title}</h3>
                         <p>{quiz.description}</p>
                         <div className="quiz-card-meta">
-                          <span>⏱️ {quiz.time_limit || 10} Mins</span>
+                          <span>⏱️ Deadline: {quiz.deadline ? new Date(quiz.deadline).toLocaleString() : "No Deadline"}</span>
                           <span>❓ {quiz.question_count || 0} Questions</span>
                         </div>
                         {isCompleted && (
@@ -178,9 +171,13 @@ function Quiz() {
                       
                       <div className="quiz-card-actions" style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center' }}>
                         {!isCompleted ? (
-                          <button onClick={() => handleStartQuiz(quiz)} className="next-btn" style={{ padding: '8px 15px', fontSize: '14px' }}>Start Quiz</button>
+                          (quiz.deadline && new Date() > new Date(quiz.deadline)) ? (
+                            <button disabled className="next-btn" style={{ padding: '8px 15px', fontSize: '14px', background: '#e74c3c', color: 'white', cursor: 'not-allowed', border: 'none' }}>Expired</button>
+                          ) : (
+                            <button onClick={() => handleStartQuiz(quiz)} className="next-btn" style={{ padding: '8px 15px', fontSize: '14px' }}>Start Quiz</button>
+                          )
                         ) : (
-                          <button disabled className="next-btn" style={{ padding: '8px 15px', fontSize: '14px', background: '#ccc', color: '#666', cursor: 'not-allowed' }}>Completed</button>
+                          <button disabled className="next-btn" style={{ padding: '8px 15px', fontSize: '14px', background: '#ccc', color: '#666', cursor: 'not-allowed', border: 'none' }}>Completed</button>
                         )}
                         {quiz.leaderboard_published === 1 && (
                           <Link to={`/quiz/${quiz.id}/leaderboard`} className="next-btn" style={{ padding: '8px 15px', fontSize: '14px', background: '#fff', color: '#176b43', border: '1px solid #176b43', textAlign: 'center', textDecoration: 'none' }}>
@@ -204,12 +201,6 @@ function Quiz() {
               >
                 ← Back to Quizzes
               </button>
-              {!isSubmitted && (
-                <div className="question-counter">
-                  <span>{currentQuestionIndex + 1}</span>
-                  <small>/ {selectedQuiz.questions?.length || 0}</small>
-                </div>
-              )}
             </div>
 
             <div className="quiz-selection-heading" style={{ marginTop: "20px" }}>
@@ -219,44 +210,41 @@ function Quiz() {
             {!isSubmitted ? (
               selectedQuiz.questions && selectedQuiz.questions.length > 0 ? (
                 <div>
-                  <div className="question-section">
-                    <span className="question-number">
-                      QUESTION {currentQuestionIndex + 1}
-                    </span>
-                    <h2>{selectedQuiz.questions[currentQuestionIndex].question}</h2>
-                  </div>
+                  {selectedQuiz.questions.map((q, index) => (
+                    <div key={q.id} style={{ marginBottom: '40px' }}>
+                      <div className="question-section">
+                        <span className="question-number">
+                          QUESTION {index + 1}
+                        </span>
+                        <h2>{q.question}</h2>
+                      </div>
 
-                  <div className="options">
-                    {["A", "B", "C", "D"].map((opt) => {
-                      const currentQ = selectedQuiz.questions[currentQuestionIndex];
-                      const optionText = currentQ[`option_${opt.toLowerCase()}`];
-                      if (!optionText) return null;
-                      const isSelected = userAnswers[currentQ.id] === opt;
-                      return (
-                        <button
-                          key={opt}
-                          className={`quiz-option ${isSelected ? "correct" : ""}`}
-                          onClick={() => handleAnswerSelect(opt)}
-                        >
-                          <span className="option-letter">{opt}</span>
-                          <span className="option-text">{optionText}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <div className="quiz-footer">
-                    <div className="score-display">
-                      Question {currentQuestionIndex + 1} of {selectedQuiz.questions.length}
+                      <div className="options">
+                        {["A", "B", "C", "D"].map((opt) => {
+                          const optionText = q[`option_${opt.toLowerCase()}`];
+                          if (!optionText) return null;
+                          const isSelected = userAnswers[q.id] === opt;
+                          return (
+                            <button
+                              key={opt}
+                              className={`quiz-option ${isSelected ? "correct" : ""}`}
+                              onClick={() => handleAnswerSelect(q.id, opt)}
+                            >
+                              <span className="option-letter">{opt}</span>
+                              <span className="option-text">{optionText}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
+                  ))}
+
+                  <div className="quiz-footer" style={{ justifyContent: 'center' }}>
                     <button
                       className="next-btn"
-                      disabled={!userAnswers[selectedQuiz.questions[currentQuestionIndex].id]}
-                      onClick={handleNext}
+                      onClick={handleSubmitAttempt}
                     >
-                      {currentQuestionIndex < selectedQuiz.questions.length - 1
-                        ? "Next Question →"
-                        : "Submit Quiz ✓"}
+                      Submit Quiz ✓
                     </button>
                   </div>
                 </div>

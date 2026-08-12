@@ -1,12 +1,25 @@
 import "./LeagueCard.css";
 import { Link } from "react-router-dom";
 
+import bplLogo from "../../assets/logos/bpl.jpg";
+import uclLogo from "../../assets/logos/ucl.webp";
+import fedCupLogo from "../../assets/logos/federation-cup.jpg";
+
+const getLeagueLogo = (leagueName) => {
+  if (!leagueName) return null;
+  const name = leagueName.toLowerCase();
+  if (name.includes('bpl') || name.includes('bangladesh premier league')) return bplLogo;
+  if (name.includes('ucl') || name.includes('champions league')) return uclLogo;
+  if (name.includes('federation')) return fedCupLogo;
+  return null;
+};
+
 function LeagueCard({ league }) {
   return (
     <div className="league-card">
 
       <div className="league-logo-wrapper">
-        <img src={league.logo} alt={league.name} className="league-logo" />
+        <img src={getLeagueLogo(league.name) || league.logo} alt={league.name} className="league-logo" />
       </div>
 
       <h2>{league.name}</h2>

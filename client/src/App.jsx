@@ -25,6 +25,7 @@ import AdminMatches from "./pages/AdminMatches";
 import AdminLeagues from "./pages/AdminLeagues";
 import AdminLeagueDetails from "./pages/AdminLeagueDetails";
 import AdminPlayers from "./pages/AdminPlayers";
+import AdminRewards from "./pages/AdminRewards";
 
 function App() {
   const location = useLocation();
@@ -55,13 +56,13 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/profile" element={<Profile />} />
 
-        {/* ADMIN */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/quizzes" element={<AdminQuizzes />} />
         <Route path="/admin/matches" element={<AdminMatches />} />
         <Route path="/admin/leagues" element={<AdminLeagues />} />
         <Route path="/admin/leagues/:leagueId" element={<AdminLeagueDetails />} />
         <Route path="/admin/players" element={<AdminPlayers />} />
+        <Route path="/admin/rewards" element={<AdminRewards />} />
 
         {/* 404 */}
         <Route

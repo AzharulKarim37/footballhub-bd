@@ -45,7 +45,7 @@ export const createQuiz = async (req, res) => {
       title,
       description,
       difficulty,
-      time_limit,
+      deadline,
     } = req.body;
 
     if (!title || !title.trim()) {
@@ -61,7 +61,7 @@ export const createQuiz = async (req, res) => {
         title,
         description,
         difficulty,
-        time_limit,
+        deadline,
         status,
         leaderboard_published,
         created_by
@@ -72,7 +72,7 @@ export const createQuiz = async (req, res) => {
         title.trim(),
         description?.trim() || "",
         difficulty || "Medium",
-        Number(time_limit) || 10,
+        deadline || null,
         req.user.id,
       ]
     );
@@ -84,7 +84,7 @@ export const createQuiz = async (req, res) => {
         title,
         description,
         difficulty,
-        time_limit,
+        deadline,
         status,
         leaderboard_published,
         created_by,
@@ -126,7 +126,7 @@ export const getAllQuizzes = async (req, res) => {
         q.title,
         q.description,
         q.difficulty,
-        q.time_limit,
+        q.deadline,
         q.status,
         q.leaderboard_published,
         q.created_by,
@@ -181,7 +181,7 @@ export const getQuizById = async (req, res) => {
         title,
         description,
         difficulty,
-        time_limit,
+        deadline,
         status,
         leaderboard_published,
         created_by,
@@ -247,7 +247,7 @@ export const updateQuiz = async (req, res) => {
       title,
       description,
       difficulty,
-      time_limit,
+      deadline,
     } = req.body;
 
     if (!title || !title.trim()) {
@@ -263,14 +263,14 @@ export const updateQuiz = async (req, res) => {
         title = ?,
         description = ?,
         difficulty = ?,
-        time_limit = ?
+        deadline = ?
       WHERE id = ?
       `,
       [
         title.trim(),
         description?.trim() || "",
         difficulty || "Medium",
-        Number(time_limit) || 10,
+        deadline || null,
         id,
       ]
     );
@@ -288,7 +288,7 @@ export const updateQuiz = async (req, res) => {
         title,
         description,
         difficulty,
-        time_limit,
+        deadline,
         status,
         leaderboard_published,
         created_by,
@@ -973,7 +973,7 @@ export const getPublishedQuizzes = async (req, res) => {
         q.title,
         q.description,
         q.difficulty,
-        q.time_limit,
+        q.deadline,
         q.leaderboard_published,
         q.created_at,
 
@@ -991,7 +991,7 @@ export const getPublishedQuizzes = async (req, res) => {
         q.title,
         q.description,
         q.difficulty,
-        q.time_limit,
+        q.deadline,
         q.leaderboard_published,
         q.created_at
 
@@ -1033,7 +1033,7 @@ export const getPublishedQuizById = async (req, res) => {
         title,
         description,
         difficulty,
-        time_limit,
+        deadline,
         status,
         leaderboard_published,
         created_at
@@ -1759,335 +1759,93 @@ is successfully sent.
 ========================================================
 */
 
-export const sendQuizRewards = async (
-  req,
-  res
-) => {
+export const sendQuizRewards = async (req, res) => {
   try {
     const { id } = req.params;
+    const { winners_count = 3, rank_forms } = req.body; 
 
-    /*
-    ------------------------------------------------------
-    GET QUIZ
-    ------------------------------------------------------
-    */
-
+    /* GET QUIZ */
     const [quizzes] = await db.query(
-      `
-      SELECT
-        id,
-        title,
-        leaderboard_published
-      FROM quizzes
-      WHERE id = ?
-      `,
+      'SELECT id, title, leaderboard_published FROM quizzes WHERE id = ?',
       [id]
     );
 
     if (quizzes.length === 0) {
-      return res.status(404).json({
-        message: "Quiz not found",
-      });
+      return res.status(404).json({ message: "Quiz not found" });
     }
-
     const quiz = quizzes[0];
 
-    /*
-    ------------------------------------------------------
-    GET TOP 3
-    ------------------------------------------------------
-    */
-
-    const [players] =
-      await db.query(
-        `
-        SELECT
-          qa.id AS attempt_id,
-          qa.user_id,
-
-          u.name,
-          u.email,
-
-          qa.score,
-          qa.correct_answers,
-          qa.total_questions,
-
-          qa.reward_sent,
-          qa.reward_sent_at,
-
-          qa.completed_at
-
+    /* GET TOP N */
+    const numWinners = parseInt(winners_count, 10) || 3;
+    const [players] = await db.query(
+      `SELECT qa.id AS attempt_id, qa.user_id, u.name, u.email, qa.score, qa.correct_answers, qa.total_questions, qa.reward_sent, qa.reward_sent_at, qa.completed_at
         FROM quiz_attempts qa
-
-        INNER JOIN users u
-          ON qa.user_id = u.id
-
-        WHERE qa.quiz_id = ?
-          AND qa.completed_at IS NOT NULL
-
-        ORDER BY
-          qa.score DESC,
-          qa.correct_answers DESC,
-          qa.completed_at ASC,
-          qa.id ASC
-
-        LIMIT 3
-        `,
-        [id]
-      );
+        INNER JOIN users u ON qa.user_id = u.id
+        WHERE qa.quiz_id = ? AND qa.completed_at IS NOT NULL
+        ORDER BY qa.score DESC, qa.correct_answers DESC, qa.completed_at ASC, qa.id ASC
+        LIMIT ?`,
+      [id, numWinners]
+    );
 
     if (players.length === 0) {
-      return res.status(400).json({
-        message:
-          "There are no completed quiz attempts yet.",
-      });
+      return res.status(400).json({ message: "There are no completed quiz attempts yet." });
     }
 
-    /*
-    ------------------------------------------------------
-    CHECK EMAIL CONFIGURATION
-    ------------------------------------------------------
-    */
-
-    let transporter = createEmailTransporter();
-
-    if (!transporter) {
-      console.warn("EMAIL_USER not configured. Mocking reward emails...");
-      // Mock transporter
-      transporter = {
-        sendMail: async (options) => {
-          console.log(`[MOCK EMAIL] Sent to ${options.to}: ${options.subject}`);
-          return true;
-        }
-      };
-    }
-
-    /*
-    ------------------------------------------------------
-    SEND EMAILS
-    ------------------------------------------------------
-    */
-
-    const rewardNames = [
-      "Champion",
-      "Runner-up",
-      "Third Place",
-    ];
-
+    /* SEND IN-APP REWARD MESSAGES */
+    const rewardNames = ["Champion", "Runner-up", "Third Place"];
     const results = [];
+    
+    // Default fallback if rank_forms not provided
+    const defaultFields = ["Full Name", "Phone Number", "Shipping Address"];
 
-    for (
-      let i = 0;
-      i < players.length;
-      i++
-    ) {
+    for (let i = 0; i < players.length; i++) {
       const player = players[i];
-
-      /*
-      Do not send another reward email
-      if reward was already sent.
-      */
-
-      if (
-        Number(player.reward_sent) === 1
-      ) {
-        results.push({
-          rank: i + 1,
-          name: player.name,
-          email: player.email,
-          status: "already_sent",
-        });
-
+      if (Number(player.reward_sent) === 1) {
+        results.push({ rank: i + 1, name: player.name, email: player.email, status: "already_sent" });
         continue;
       }
 
-      if (!player.email) {
-        results.push({
-          rank: i + 1,
-          name: player.name,
-          email: null,
-          status: "no_email",
-        });
+      const rank = i + 1;
+      const rewardName = rank <= 3 ? rewardNames[i] : `Top Performer (Rank ${rank})`;
+      const title = `🏆 Quiz Reward: ${rewardName}`;
+      const content = `Congratulations ${player.name || "Fan"}! You finished ${rewardName} in the quiz: ${quiz.title}. Please submit the required information to claim your reward.`;
 
-        continue;
+      // Determine the fields for this rank
+      let fields = defaultFields;
+      if (rank_forms) {
+        if (rank === 1 && rank_forms[1]) fields = rank_forms[1];
+        else if (rank === 2 && rank_forms[2]) fields = rank_forms[2];
+        else if (rank === 3 && rank_forms[3]) fields = rank_forms[3];
+        else if (rank > 3 && rank_forms["others"]) fields = rank_forms["others"];
       }
-
-      const rewardName =
-        rewardNames[i];
-
-      const percentage =
-        player.total_questions > 0
-          ? Math.round(
-              (player.correct_answers /
-                player.total_questions) *
-                100
-            )
-          : 0;
 
       try {
-        await transporter.sendMail({
-          from: process.env.EMAIL_USER,
-
-          to: player.email,
-
-          subject:
-            `🏆 Football Hub BD Quiz Reward - ${rewardName}`,
-
-          html: `
-            <div style="
-              font-family: Arial, sans-serif;
-              max-width: 600px;
-              margin: auto;
-              padding: 30px;
-              background: #f5f7f6;
-              border-radius: 12px;
-            ">
-
-              <div style="
-                background: #006b3c;
-                color: white;
-                padding: 25px;
-                border-radius: 10px;
-                text-align: center;
-              ">
-
-                <h1>
-                  🏆 Congratulations!
-                </h1>
-
-                <p>
-                  Football Hub BD Quiz
-                </p>
-
-              </div>
-
-              <div style="
-                background: white;
-                padding: 25px;
-                margin-top: 15px;
-                border-radius: 10px;
-              ">
-
-                <h2>
-                  ${player.name || "Football Fan"}
-                </h2>
-
-                <p>
-                  You finished
-                  <strong>${rewardName}</strong>
-                  in:
-                </p>
-
-                <h2>
-                  ${quiz.title}
-                </h2>
-
-                <hr />
-
-                <p>
-                  <strong>Score:</strong>
-                  ${player.score}/${player.total_questions}
-                </p>
-
-                <p>
-                  <strong>Correct Answers:</strong>
-                  ${player.correct_answers}
-                </p>
-
-                <p>
-                  <strong>Accuracy:</strong>
-                  ${percentage}%
-                </p>
-
-                <p>
-                  Your performance earned you a
-                  <strong>${rewardName}</strong>
-                  reward from Football Hub BD.
-                </p>
-
-                <p>
-                  Thank you for participating and
-                  supporting football in Bangladesh.
-                </p>
-
-              </div>
-
-              <p style="
-                text-align: center;
-                color: #777;
-                margin-top: 20px;
-              ">
-                Football Hub BD
-              </p>
-
-            </div>
-          `,
-        });
-
-        /*
-        --------------------------------------------------
-        MARK REWARD AS SENT
-        --------------------------------------------------
-        */
-
         await db.query(
-          `
-          UPDATE quiz_attempts
-          SET
-            reward_sent = 1,
-            reward_sent_at = NOW()
-          WHERE id = ?
-          `,
+          'INSERT INTO user_messages (user_id, quiz_id, title, content, type, form_fields) VALUES (?, ?, ?, ?, ?, ?)',
+          [player.user_id, id, title, content, 'REWARD_CLAIM', JSON.stringify(fields)]
+        );
+
+        /* MARK REWARD AS SENT */
+        await db.query(
+          'UPDATE quiz_attempts SET reward_sent = 1, reward_sent_at = NOW() WHERE id = ?',
           [player.attempt_id]
         );
 
-        results.push({
-          rank: i + 1,
-          name: player.name,
-          email: player.email,
-          status: "sent",
-        });
-      } catch (emailError) {
-        console.error(
-          `Reward email error for ${player.email}:`,
-          emailError
-        );
-
-        results.push({
-          rank: i + 1,
-          name: player.name,
-          email: player.email,
-          status: "failed",
-          error: emailError.message,
-        });
+        results.push({ rank: i + 1, name: player.name, email: player.email, status: "sent" });
+      } catch (err) {
+        console.error('Reward message error:', err);
+        results.push({ rank: i + 1, name: player.name, email: player.email, status: "failed", error: err.message });
       }
     }
 
-    const sentCount =
-      results.filter(
-        (item) =>
-          item.status === "sent"
-      ).length;
-
+    const sentCount = results.filter((item) => item.status === "sent").length;
     return res.status(200).json({
-      message:
-        sentCount > 0
-          ? `Reward process completed. ${sentCount} reward email(s) sent.`
-          : "No new reward emails were sent.",
-
+      message: sentCount > 0 ? `Reward process completed. ${sentCount} in-app message(s) sent.` : "No new reward messages were sent.",
       results,
     });
   } catch (error) {
-    console.error(
-      "Send quiz rewards error:",
-      error
-    );
-
-    return res.status(500).json({
-      message:
-        "Failed to send quiz rewards",
-      error: error.message,
-    });
+    console.error("Send quiz rewards error:", error);
+    return res.status(500).json({ message: "Failed to send quiz rewards", error: error.message });
   }
 };
 

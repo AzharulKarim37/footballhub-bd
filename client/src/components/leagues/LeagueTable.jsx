@@ -1,6 +1,17 @@
 import "./LeagueTable.css";
 
-function LeagueTable({ standings }) {
+function LeagueTable({ standings, leagueName }) {
+  const getRowClass = (position) => {
+    if (!leagueName) return '';
+    const name = leagueName.toLowerCase();
+    if (name.includes('ucl') || name.includes('champions league')) {
+      if (position <= 8) return 'ucl-ro16';
+      if (position <= 24) return 'ucl-playoff';
+      return 'ucl-eliminated';
+    }
+    return '';
+  };
+
   return (
     <section className="league-table-section">
 
@@ -46,7 +57,7 @@ function LeagueTable({ standings }) {
 
             {standings.map((team) => (
 
-              <tr key={team.position}>
+              <tr key={team.position} className={getRowClass(team.position)}>
 
                 <td>{team.position}</td>
 

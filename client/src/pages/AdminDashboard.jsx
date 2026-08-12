@@ -67,6 +67,9 @@ function AdminDashboard() {
           <Link to="/admin/quizzes" className="admin-nav-link">
             📝 Quiz Management
           </Link>
+          <Link to="/admin/rewards" className="admin-nav-link">
+            🎁 Reward Claims
+          </Link>
           <Link to="/" className="admin-nav-link">
             🌐 View Website
           </Link>
@@ -97,13 +100,6 @@ function AdminDashboard() {
 
         {/* STATS */}
         <div className="admin-stats">
-          <div className="admin-stat-card">
-            <div className="stat-icon">⚽</div>
-            <div>
-              <span>Total Matches</span>
-              <strong>{stats.matches}</strong>
-            </div>
-          </div>
 
           <div className="admin-stat-card">
             <div className="stat-icon">🏆</div>
@@ -113,13 +109,7 @@ function AdminDashboard() {
             </div>
           </div>
 
-          <div className="admin-stat-card">
-            <div className="stat-icon">🏃</div>
-            <div>
-              <span>Total Players</span>
-              <strong>{stats.players}</strong>
-            </div>
-          </div>
+
 
           <div className="admin-stat-card">
             <div className="stat-icon">📝</div>
