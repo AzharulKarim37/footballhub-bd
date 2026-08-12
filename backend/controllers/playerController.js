@@ -52,15 +52,15 @@ export const getPlayerById = async (req, res) => {
 // Create new player
 export const createPlayer = async (req, res) => {
   try {
-    const { name, club, position, number, image, nationality, goals, assists } = req.body;
+    const { name, club, position, number, image, nationality, dob, market_value, goals, assists } = req.body;
 
     if (!name || !club || !position) {
       return res.status(400).json({ message: "Name, club, and position are required" });
     }
 
     const [result] = await db.query(
-      `INSERT INTO players (name, club, position, number, image, nationality, goals, assists)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO players (name, club, position, number, image, nationality, dob, market_value, goals, assists)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         name,
         club,
@@ -68,6 +68,8 @@ export const createPlayer = async (req, res) => {
         number || 10,
         image || "/src/assets/players/jamal-bhuyanjpg.webp",
         nationality || "Bangladesh",
+        dob || null,
+        market_value || null,
         goals || 0,
         assists || 0,
       ]
@@ -85,7 +87,7 @@ export const createPlayer = async (req, res) => {
 export const updatePlayer = async (req, res) => {
   const { id } = req.params;
   try {
-    const { name, club, position, number, image, nationality, goals, assists } = req.body;
+    const { name, club, position, number, image, nationality, dob, market_value, goals, assists } = req.body;
 
     const [existing] = await db.query("SELECT * FROM players WHERE id = ?", [id]);
     if (existing.length === 0) {
@@ -94,7 +96,7 @@ export const updatePlayer = async (req, res) => {
 
     await db.query(
       `UPDATE players 
-       SET name = ?, club = ?, position = ?, number = ?, image = ?, nationality = ?, goals = ?, assists = ?
+       SET name = ?, club = ?, position = ?, number = ?, image = ?, nationality = ?, dob = ?, market_value = ?, goals = ?, assists = ?
        WHERE id = ?`,
       [
         name || existing[0].name,
@@ -103,6 +105,8 @@ export const updatePlayer = async (req, res) => {
         number !== undefined ? number : existing[0].number,
         image || existing[0].image,
         nationality || existing[0].nationality,
+        dob !== undefined ? dob : existing[0].dob,
+        market_value !== undefined ? market_value : existing[0].market_value,
         goals !== undefined ? goals : existing[0].goals,
         assists !== undefined ? assists : existing[0].assists,
         id,

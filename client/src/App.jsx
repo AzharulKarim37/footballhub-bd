@@ -7,6 +7,7 @@ import Matches from "./pages/Matches";
 import Leagues from "./pages/Leagues";
 import LeagueDetails from "./pages/LeagueDetails";
 import Teams from "./pages/Teams";
+import TeamDetails from "./pages/TeamDetails";
 import Players from "./pages/Players";
 import News from "./pages/News";
 
@@ -39,6 +40,7 @@ function App() {
         <Route path="/leagues" element={<Leagues />} />
         <Route path="/leagues/:leagueId" element={<LeagueDetails />} />
         <Route path="/teams" element={<Teams />} />
+        <Route path="/teams/:id" element={<TeamDetails />} />
         <Route path="/players" element={<Players />} />
         <Route path="/news" element={<News />} />
 
