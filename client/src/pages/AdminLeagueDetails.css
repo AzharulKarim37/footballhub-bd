@@ -225,3 +225,17 @@
 @media (max-width: 1024px) {
   .panels-container { grid-template-columns: 1fr; }
 }
+
+
+/* UCL SPECIFIC FORMATTING */
+.admin-list-table tr.ucl-ro16 td:first-child {
+  border-left: 4px solid #176b43;
+}
+
+.admin-list-table tr.ucl-playoff td:first-child {
+  border-left: 4px solid #f39c12;
+}
+
+.admin-list-table tr.ucl-eliminated td:first-child {
+  border-left: 4px solid #e74c3c;
+}

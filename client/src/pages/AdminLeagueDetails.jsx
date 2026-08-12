@@ -4,6 +4,19 @@ import axios from "axios";
 import "./AdminLeagueDetails.css";
 
 const API_URL = "http://localhost:5001/api/leagues";
+import bplLogo from "../assets/logos/bpl.jpg";
+import uclLogo from "../assets/logos/ucl.webp";
+import fedCupLogo from "../assets/logos/federation-cup.jpg";
+
+const getLeagueLogo = (leagueName) => {
+  if (!leagueName) return null;
+  const name = leagueName.toLowerCase();
+  if (name.includes('bpl') || name.includes('bangladesh premier league')) return bplLogo;
+  if (name.includes('ucl') || name.includes('champions league')) return uclLogo;
+  if (name.includes('federation')) return fedCupLogo;
+  return null;
+};
+
 
 function AdminLeagueDetails() {
   const { leagueId } = useParams();
@@ -260,11 +273,22 @@ function AdminLeagueDetails() {
   const { league, standings, topScorers, availableSeasons, recentMatches, upcomingFixtures } = leagueData;
   const allMatches = [...(upcomingFixtures || []), ...(recentMatches || [])];
 
+  const getRowClass = (position) => {
+    if (!leagueData || !leagueData.league || !leagueData.league.name) return '';
+    const name = leagueData.league.name.toLowerCase();
+    if (name.includes('ucl') || name.includes('champions league')) {
+      if (position <= 8) return 'ucl-ro16';
+      if (position <= 24) return 'ucl-playoff';
+      return 'ucl-eliminated';
+    }
+    return '';
+  };
+
   return (
     <div className="league-details-page">
       <div className="league-details-header">
         <div className="league-details-title">
-          <img src={league.logo} alt={league.name} />
+          <img src={getLeagueLogo(league.name) || league.logo} alt={league.name} />
           <div>
             <h1>{league.name}</h1>
             <span>{league.country} &bull; Season 
@@ -319,7 +343,7 @@ function AdminLeagueDetails() {
             </thead>
             <tbody>
               {standings.map(s => (
-                <tr key={s.id}>
+                <tr key={s.id} className={getRowClass(s.position)}>
                   <td><strong>{s.position}</strong></td>
                   <td>{s.club}</td>
                   <td>{s.played}</td>
@@ -334,6 +358,13 @@ function AdminLeagueDetails() {
             </tbody>
           </table>
         </div>
+        
+        {leagueData && leagueData.league && (leagueData.league.name.toLowerCase().includes('ucl') || leagueData.league.name.toLowerCase().includes('champions league')) && (
+          <div className="ucl-legend" style={{marginBottom: '20px', padding: '10px 15px', background: 'rgba(255,255,255,0.7)', borderRadius: '8px', display: 'flex', gap: '20px', border: '1px solid rgba(255,255,255,0.6)'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}><span style={{width: '12px', height: '12px', background: '#176b43', borderRadius: '3px'}}></span> Qualification to Round of 16</div>
+            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}><span style={{width: '12px', height: '12px', background: '#f39c12', borderRadius: '3px'}}></span> Qualification to Play-offs</div>
+          </div>
+        )}
 
         {/* TOP SCORERS PANEL */}
         <div className="admin-panel">

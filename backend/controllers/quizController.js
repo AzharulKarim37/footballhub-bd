@@ -45,7 +45,7 @@ export const createQuiz = async (req, res) => {
       title,
       description,
       difficulty,
-      time_limit,
+      deadline,
     } = req.body;
 
     if (!title || !title.trim()) {
@@ -61,7 +61,7 @@ export const createQuiz = async (req, res) => {
         title,
         description,
         difficulty,
-        time_limit,
+        deadline,
         status,
         leaderboard_published,
         created_by
@@ -72,7 +72,7 @@ export const createQuiz = async (req, res) => {
         title.trim(),
         description?.trim() || "",
         difficulty || "Medium",
-        Number(time_limit) || 10,
+        deadline || null,
         req.user.id,
       ]
     );
@@ -84,7 +84,7 @@ export const createQuiz = async (req, res) => {
         title,
         description,
         difficulty,
-        time_limit,
+        deadline,
         status,
         leaderboard_published,
         created_by,
@@ -126,7 +126,7 @@ export const getAllQuizzes = async (req, res) => {
         q.title,
         q.description,
         q.difficulty,
-        q.time_limit,
+        q.deadline,
         q.status,
         q.leaderboard_published,
         q.created_by,
@@ -181,7 +181,7 @@ export const getQuizById = async (req, res) => {
         title,
         description,
         difficulty,
-        time_limit,
+        deadline,
         status,
         leaderboard_published,
         created_by,
@@ -247,7 +247,7 @@ export const updateQuiz = async (req, res) => {
       title,
       description,
       difficulty,
-      time_limit,
+      deadline,
     } = req.body;
 
     if (!title || !title.trim()) {
@@ -263,14 +263,14 @@ export const updateQuiz = async (req, res) => {
         title = ?,
         description = ?,
         difficulty = ?,
-        time_limit = ?
+        deadline = ?
       WHERE id = ?
       `,
       [
         title.trim(),
         description?.trim() || "",
         difficulty || "Medium",
-        Number(time_limit) || 10,
+        deadline || null,
         id,
       ]
     );
@@ -288,7 +288,7 @@ export const updateQuiz = async (req, res) => {
         title,
         description,
         difficulty,
-        time_limit,
+        deadline,
         status,
         leaderboard_published,
         created_by,
@@ -973,7 +973,7 @@ export const getPublishedQuizzes = async (req, res) => {
         q.title,
         q.description,
         q.difficulty,
-        q.time_limit,
+        q.deadline,
         q.leaderboard_published,
         q.created_at,
 
@@ -991,7 +991,7 @@ export const getPublishedQuizzes = async (req, res) => {
         q.title,
         q.description,
         q.difficulty,
-        q.time_limit,
+        q.deadline,
         q.leaderboard_published,
         q.created_at
 
@@ -1033,7 +1033,7 @@ export const getPublishedQuizById = async (req, res) => {
         title,
         description,
         difficulty,
-        time_limit,
+        deadline,
         status,
         leaderboard_published,
         created_at
@@ -1762,7 +1762,7 @@ is successfully sent.
 export const sendQuizRewards = async (req, res) => {
   try {
     const { id } = req.params;
-    const { form_fields } = req.body; // Array of fields like ["Name", "Address"]
+    const { winners_count = 3, rank_forms } = req.body; 
 
     /* GET QUIZ */
     const [quizzes] = await db.query(
@@ -1775,15 +1775,16 @@ export const sendQuizRewards = async (req, res) => {
     }
     const quiz = quizzes[0];
 
-    /* GET TOP 3 */
+    /* GET TOP N */
+    const numWinners = parseInt(winners_count, 10) || 3;
     const [players] = await db.query(
       `SELECT qa.id AS attempt_id, qa.user_id, u.name, u.email, qa.score, qa.correct_answers, qa.total_questions, qa.reward_sent, qa.reward_sent_at, qa.completed_at
         FROM quiz_attempts qa
         INNER JOIN users u ON qa.user_id = u.id
         WHERE qa.quiz_id = ? AND qa.completed_at IS NOT NULL
         ORDER BY qa.score DESC, qa.correct_answers DESC, qa.completed_at ASC, qa.id ASC
-        LIMIT 3`,
-      [id]
+        LIMIT ?`,
+      [id, numWinners]
     );
 
     if (players.length === 0) {
@@ -1793,7 +1794,9 @@ export const sendQuizRewards = async (req, res) => {
     /* SEND IN-APP REWARD MESSAGES */
     const rewardNames = ["Champion", "Runner-up", "Third Place"];
     const results = [];
-    const fields = Array.isArray(form_fields) && form_fields.length > 0 ? form_fields : ["Full Name", "Phone Number", "Shipping Address"];
+    
+    // Default fallback if rank_forms not provided
+    const defaultFields = ["Full Name", "Phone Number", "Shipping Address"];
 
     for (let i = 0; i < players.length; i++) {
       const player = players[i];
@@ -1802,9 +1805,19 @@ export const sendQuizRewards = async (req, res) => {
         continue;
       }
 
-      const rewardName = rewardNames[i];
+      const rank = i + 1;
+      const rewardName = rank <= 3 ? rewardNames[i] : `Top Performer (Rank ${rank})`;
       const title = `🏆 Quiz Reward: ${rewardName}`;
       const content = `Congratulations ${player.name || "Fan"}! You finished ${rewardName} in the quiz: ${quiz.title}. Please submit the required information to claim your reward.`;
+
+      // Determine the fields for this rank
+      let fields = defaultFields;
+      if (rank_forms) {
+        if (rank === 1 && rank_forms[1]) fields = rank_forms[1];
+        else if (rank === 2 && rank_forms[2]) fields = rank_forms[2];
+        else if (rank === 3 && rank_forms[3]) fields = rank_forms[3];
+        else if (rank > 3 && rank_forms["others"]) fields = rank_forms["others"];
+      }
 
       try {
         await db.query(

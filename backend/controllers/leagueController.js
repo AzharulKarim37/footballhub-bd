@@ -38,21 +38,26 @@ export const getLeagueById = async (req, res) => {
 
     // Fetch standings
     const [standings] = await db.query(
-      "SELECT * FROM league_standings WHERE league_id = ? AND season = ? ORDER BY position ASC",
+      "SELECT * FROM league_standings WHERE league_id = ? AND season = ? ORDER BY points DESC, gd DESC",
       [id, targetSeason]
     );
 
-    // Parse form string "W,W,D,W,W" to array
-    const formattedStandings = standings.map((item) => ({
+    // Parse form string "W,W,D,W,W" to array and set position
+    const formattedStandings = standings.map((item, index) => ({
       ...item,
+      position: index + 1,
       form: item.form ? item.form.split(",") : ["W", "W", "D", "W", "W"],
     }));
 
     // Fetch top scorers
-    const [scorers] = await db.query(
-      "SELECT * FROM top_scorers WHERE league_id = ? AND season = ? ORDER BY rank_no ASC",
+    const [scorersRaw] = await db.query(
+      "SELECT * FROM top_scorers WHERE league_id = ? AND season = ? ORDER BY goals DESC",
       [id, targetSeason]
     );
+    const scorers = scorersRaw.map((scorer, index) => ({
+      ...scorer,
+      rank_no: index + 1
+    }));
 
     // Fetch recent matches
     const [recentMatches] = await db.query(

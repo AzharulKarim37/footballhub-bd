@@ -37,7 +37,14 @@ function AttemptDetails() {
   if (error) return <div className="quiz-page"><div className="state-container"><h2 className="quiz-error">{error}</h2><Link to="/profile" className="home-btn">Back to Profile</Link></div></div>;
   if (!attempt) return null;
 
-  const userAnswers = attempt.user_answers_json || [];
+  let userAnswers = [];
+  try {
+    userAnswers = typeof attempt.user_answers_json === 'string' 
+      ? JSON.parse(attempt.user_answers_json) 
+      : (attempt.user_answers_json || []);
+  } catch (e) {
+    userAnswers = [];
+  }
 
   return (
     <div className="quiz-page">
@@ -57,7 +64,7 @@ function AttemptDetails() {
 
         <div className="quiz-questions-review" style={{marginTop: '30px'}}>
           {questions.map((q, index) => {
-            const userAnswerObj = userAnswers.find(ua => ua.question_id === q.id);
+            const userAnswerObj = userAnswers.find(ua => String(ua.question_id) === String(q.id));
             const userAnswer = userAnswerObj ? userAnswerObj.answer : null;
             const isCorrect = userAnswer === q.correct_answer;
             const options = q.options_json || {};

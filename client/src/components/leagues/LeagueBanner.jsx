@@ -1,4 +1,16 @@
 import "./LeagueBanner.css";
+import bplLogo from "../../assets/logos/bpl.jpg";
+import uclLogo from "../../assets/logos/ucl.webp";
+import fedCupLogo from "../../assets/logos/federation-cup.jpg";
+
+const getLeagueLogo = (leagueName) => {
+  if (!leagueName) return null;
+  const name = leagueName.toLowerCase();
+  if (name.includes('bpl') || name.includes('bangladesh premier league')) return bplLogo;
+  if (name.includes('ucl') || name.includes('champions league')) return uclLogo;
+  if (name.includes('federation')) return fedCupLogo;
+  return null;
+};
 
 function LeagueBanner({ league, availableSeasons, currentSeason, onSeasonChange }) {
   return (
@@ -7,7 +19,7 @@ function LeagueBanner({ league, availableSeasons, currentSeason, onSeasonChange 
       <div className="league-banner-left">
 
         <img
-          src={league.logo}
+          src={getLeagueLogo(league.name) || league.logo}
           alt={league.name}
           className="league-banner-logo"
         />

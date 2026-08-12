@@ -88,7 +88,7 @@ function LeagueDetails() {
       {/* Standings + Top Scorers */}
       <div className="league-dashboard">
         <div className="dashboard-left">
-          <LeagueTable standings={standings || []} />
+          <LeagueTable standings={standings || []} leagueName={league.name} />
         </div>
 
         <div className="dashboard-right">

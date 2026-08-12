@@ -195,26 +195,30 @@ function Profile() {
             ) : (
               <div className="profile-quizzes-grid">
                 {messages.map((msg) => (
-                  <div key={msg.id} className="profile-quiz-card" style={{cursor: 'pointer', border: msg.status === 'UNREAD' ? '2px solid #006b3c' : '1px solid #ddd'}} onClick={() => {
-                    if (msg.type === 'REWARD_CLAIM' && msg.status !== 'CLAIMED') {
-                      setSelectedMessage(msg);
-                      const initialForm = {};
-                      const fields = msg.form_fields ? (typeof msg.form_fields === 'string' ? JSON.parse(msg.form_fields) : msg.form_fields) : ["Full Name", "Phone Number", "Shipping Address"];
-                      fields.forEach(f => initialForm[f] = "");
-                      setClaimForm(initialForm);
-                    }
-                  }}>
-                    <h4 style={{display: 'flex', justifyContent: 'space-between'}}>
+                  <div 
+                    key={msg.id} 
+                    className={`profile-quiz-card message-card ${msg.status === 'UNREAD' ? 'unread' : ''}`}
+                    onClick={() => {
+                      if (msg.type === 'REWARD_CLAIM' && msg.status !== 'CLAIMED') {
+                        setSelectedMessage(msg);
+                        const initialForm = {};
+                        const fields = msg.form_fields ? (typeof msg.form_fields === 'string' ? JSON.parse(msg.form_fields) : msg.form_fields) : ["Full Name", "Phone Number", "Shipping Address"];
+                        fields.forEach(f => initialForm[f] = "");
+                        setClaimForm(initialForm);
+                      }
+                    }}
+                  >
+                    <h4 className="message-title">
                       {msg.title}
-                      {msg.status === 'UNREAD' && <span style={{color: 'red', fontSize: '12px', fontWeight: 'bold'}}>NEW</span>}
-                      {msg.status === 'CLAIMED' && <span style={{color: 'green', fontSize: '12px', fontWeight: 'bold'}}>CLAIMED</span>}
+                      {msg.status === 'UNREAD' && <span className="badge new">NEW</span>}
+                      {msg.status === 'CLAIMED' && <span className="badge claimed">CLAIMED</span>}
                     </h4>
-                    <p style={{fontSize: '14px', color: '#555', marginTop: '10px'}}>{msg.content}</p>
-                    <div className="quiz-date" style={{marginTop: '15px'}}>
+                    <p className="message-content">{msg.content}</p>
+                    <div className="quiz-date message-date">
                       Received: {new Date(msg.created_at).toLocaleDateString()}
                     </div>
                     {msg.type === 'REWARD_CLAIM' && msg.status !== 'CLAIMED' && (
-                      <button style={{marginTop: '15px', background: '#006b3c', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '4px', width: '100%', cursor: 'pointer'}}>
+                      <button className="btn-claim-reward">
                         Claim Reward
                       </button>
                     )}
@@ -227,31 +231,32 @@ function Profile() {
 
         {/* Claim Modal */}
         {selectedMessage && (
-          <div style={{position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000}}>
-            <div style={{background: 'white', padding: '30px', borderRadius: '10px', width: '90%', maxWidth: '500px'}}>
+          <div className="modal-overlay">
+            <div className="claim-modal-content">
               <h2>Claim Your Reward</h2>
-              <p style={{marginBottom: '20px', color: '#555'}}>Please provide the following information to claim your reward for: <strong>{selectedMessage.title}</strong></p>
+              <p className="claim-modal-desc">
+                Please provide the following information to claim your reward for: <strong>{selectedMessage.title}</strong>
+              </p>
               
-              <form onSubmit={handleClaimSubmit}>
+              <form onSubmit={handleClaimSubmit} className="claim-form">
                 {Object.keys(claimForm).map((field) => (
-                  <div key={field} style={{marginBottom: '15px'}}>
-                    <label style={{display: 'block', marginBottom: '5px', fontWeight: 'bold'}}>{field}</label>
+                  <div key={field} className="claim-form-group">
+                    <label>{field}</label>
                     <input 
                       type="text" 
                       required 
                       value={claimForm[field]} 
                       onChange={(e) => setClaimForm({...claimForm, [field]: e.target.value})}
-                      style={{width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px'}}
                     />
                   </div>
                 ))}
                 
-                <div style={{display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px'}}>
-                  <button type="button" onClick={() => setSelectedMessage(null)} style={{padding: '10px 20px', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer'}}>
+                <div className="claim-modal-actions">
+                  <button type="button" className="btn-cancel" onClick={() => setSelectedMessage(null)}>
                     Cancel
                   </button>
-                  <button type="submit" disabled={submittingClaim} style={{padding: '10px 20px', border: 'none', borderRadius: '4px', background: '#006b3c', color: 'white', cursor: 'pointer'}}>
-                    {submittingClaim ? 'Submitting...' : 'Submit Claim'}
+                  <button type="submit" className="btn-submit" disabled={submittingClaim}>
+                    {submittingClaim ? "Submitting..." : "Submit Claim"}
                   </button>
                 </div>
               </form>

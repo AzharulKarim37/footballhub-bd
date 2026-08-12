@@ -16,11 +16,11 @@ function TopScorers({ players }) {
 
           <div
             className="scorer-card"
-            key={player.rank}
+            key={player.rank_no}
           >
 
             <div className="rank">
-              #{player.rank}
+              #{player.rank_no}
             </div>
 
             <div className="player-info">
