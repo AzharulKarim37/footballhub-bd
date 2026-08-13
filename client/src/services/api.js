@@ -20,7 +20,7 @@ const fallbackPlayers = [
   { id: 4, name: "Sohel Rana", club: "Abahani Limited", position: "Midfielder", number: 8, image: sohel, nationality: "Bangladesh", goals: 9, assists: 14 },
 ];
 
-const API_BASE = "http://127.0.0.1:5001/api";
+const API_BASE = "http://localhost:5001/api";
 
 const api = axios.create({
   baseURL: API_BASE,
@@ -62,10 +62,9 @@ export const fetchLeagues = async () => {
 /**
  * Fetch single league details (league stats, standings, top scorers, recent matches, upcoming fixtures)
  */
-export const fetchLeagueById = async (leagueId, season = null) => {
+export const fetchLeagueById = async (leagueId) => {
   try {
-    const url = season ? `/leagues/${leagueId}?season=${season}` : `/leagues/${leagueId}`;
-    const response = await api.get(url);
+    const response = await api.get(`/leagues/${leagueId}`);
     return response.data;
   } catch (error) {
     console.warn(`⚠️ API fetchLeagueById(${leagueId}) failed, using fallback static data.`, error.message);
@@ -95,19 +94,6 @@ export const fetchTeams = async (params = {}) => {
 };
 
 /**
- * Fetch a single team by ID, including squad and trophy history
- */
-export const fetchTeamById = async (id) => {
-  try {
-    const response = await api.get(`/teams/${id}`);
-    return response.data;
-  } catch (error) {
-    console.warn(`⚠️ API fetchTeamById(${id}) failed.`, error.message);
-    return null;
-  }
-};
-
-/**
  * Fetch all players
  */
 export const fetchPlayers = async (params = {}) => {
@@ -117,31 +103,6 @@ export const fetchPlayers = async (params = {}) => {
   } catch (error) {
     console.warn("⚠️ API fetchPlayers failed, fallback to static data.", error.message);
     return fallbackPlayers;
-  }
-};
-
-/**
- * Fetch all news (combined admin DB and RSS feeds)
- */
-export const fetchNews = async () => {
-  try {
-    const response = await api.get("/news");
-    return response.data?.news || [];
-  } catch (error) {
-    console.warn("⚠️ API fetchNews failed, using static fallback news.", error.message);
-    return [
-      {
-        id: "fallback-1",
-        title: "Bashundhara Kings Secure BPL Title in Thrilling Fashion",
-        summary: "Bashundhara Kings clinched the Bangladesh Premier League title for a record fifth consecutive time after beating Abahani Limited.",
-        content: "Bashundhara Kings once again showed their dominance in Bangladesh football by securing the league title with two matches to spare. In a thrilling encounter at the Kings Arena, they defeated traditional rivals Abahani Limited Dhaka 2-1 to send the home fans into wild celebrations. The Kings have established themselves as an unstoppable force in the domestic league, winning their fifth straight BPL crown.",
-        category: "BD Football",
-        author: "Admin",
-        source: "Football Hub BD",
-        image: null,
-        created_at: new Date()
-      }
-    ];
   }
 };
 

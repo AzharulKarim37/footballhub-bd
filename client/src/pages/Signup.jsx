@@ -4,6 +4,8 @@ import "./Signup.css";
 
 import logo from "../assets/logos/logo.png";
 
+const API_URL = "http://localhost:5001/api";
+
 function Signup() {
   const [formData, setFormData] = useState({
     name: "",
@@ -65,7 +67,7 @@ function Signup() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:5001/api/auth/signup",
+        `${API_URL}/auth/signup`,
         {
           method: "POST",
 

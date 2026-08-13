@@ -3,6 +3,10 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 
 import db from "../config/db.js";
+import sendEmail from "../utils/sendEmail.js";
+
+const FRONTEND_URL =
+  process.env.FRONTEND_URL || "http://localhost:5173";
 
 // ======================================================
 // SIGNUP
@@ -119,6 +123,32 @@ export const signup = async (req, res) => {
     );
 
     // --------------------------------------------------
+    // SEND VERIFICATION EMAIL
+    // --------------------------------------------------
+
+    const verificationLink = `${FRONTEND_URL}/verify-email/${verificationToken}`;
+
+    try {
+      await sendEmail(
+        normalizedEmail,
+        "Verify your Football Hub BD account",
+        `
+        <p>Hi ${name.trim()},</p>
+        <p>Thanks for signing up to Football Hub BD. Click the link below to verify your email address:</p>
+        <p><a href="${verificationLink}">${verificationLink}</a></p>
+        <p>This link expires in 24 hours.</p>
+        `
+      );
+    } catch (emailError) {
+      // Don't fail signup just because the email couldn't be sent —
+      // the user can still verify later, and the link is also returned below.
+      console.error(
+        "Failed to send verification email:",
+        emailError.message
+      );
+    }
+
+    // --------------------------------------------------
     // RESPONSE
     // --------------------------------------------------
 
@@ -132,6 +162,10 @@ export const signup = async (req, res) => {
         role: "user",
         is_verified: false,
       },
+
+      // Returned so the signup page can show/copy it directly —
+      // useful in dev when EMAIL_USER/EMAIL_PASS aren't configured.
+      verificationLink,
     });
   } catch (error) {
     console.error("Signup error:", error);
@@ -398,6 +432,203 @@ export const verifyEmail = async (
     return res.status(500).json({
       message:
         "Server error during email verification",
+    });
+  }
+};
+
+// ======================================================
+// FORGOT PASSWORD
+// ======================================================
+
+export const forgotPassword = async (
+  req,
+  res
+) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        message: "Email is required",
+      });
+    }
+
+    const normalizedEmail =
+      email.trim().toLowerCase();
+
+    const [users] = await db.query(
+      `
+      SELECT id, name, email
+      FROM users
+      WHERE email = ?
+      `,
+      [normalizedEmail]
+    );
+
+    // --------------------------------------------------
+    // ALWAYS RESPOND WITH THE SAME MESSAGE
+    // (don't reveal whether an email exists)
+    // --------------------------------------------------
+
+    const genericResponse = {
+      message:
+        "If an account with that email exists, a password reset link has been sent.",
+    };
+
+    if (users.length === 0) {
+      return res.status(200).json(genericResponse);
+    }
+
+    const user = users[0];
+
+    const resetToken =
+      crypto.randomBytes(32).toString("hex");
+
+    const resetTokenExpires = new Date(
+      Date.now() + 60 * 60 * 1000
+    ); // 1 hour
+
+    await db.query(
+      `
+      UPDATE users
+      SET reset_token = ?, reset_token_expires = ?
+      WHERE id = ?
+      `,
+      [resetToken, resetTokenExpires, user.id]
+    );
+
+    const resetLink = `${FRONTEND_URL}/reset-password/${resetToken}`;
+
+    try {
+      await sendEmail(
+        user.email,
+        "Reset your Football Hub BD password",
+        `
+        <p>Hi ${user.name},</p>
+        <p>We received a request to reset your password. Click the link below to choose a new one:</p>
+        <p><a href="${resetLink}">${resetLink}</a></p>
+        <p>This link expires in 1 hour. If you didn't request this, you can safely ignore this email.</p>
+        `
+      );
+    } catch (emailError) {
+      console.error(
+        "Failed to send reset email:",
+        emailError.message
+      );
+    }
+
+    return res.status(200).json({
+      ...genericResponse,
+      // Returned so the page can show/copy it directly —
+      // useful in dev when EMAIL_USER/EMAIL_PASS aren't configured.
+      resetLink,
+    });
+  } catch (error) {
+    console.error(
+      "Forgot password error:",
+      error
+    );
+
+    return res.status(500).json({
+      message:
+        "Server error during password reset request",
+    });
+  }
+};
+
+// ======================================================
+// RESET PASSWORD
+// ======================================================
+
+export const resetPassword = async (
+  req,
+  res
+) => {
+  try {
+    const { token } = req.params;
+    const { password, confirmPassword } = req.body;
+
+    if (!token) {
+      return res.status(400).json({
+        message: "Reset token is required",
+      });
+    }
+
+    if (!password || !confirmPassword) {
+      return res.status(400).json({
+        message:
+          "Password and confirm password are required",
+      });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        message: "Passwords do not match",
+      });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({
+        message:
+          "Password must be at least 8 characters",
+      });
+    }
+
+    const [users] = await db.query(
+      `
+      SELECT id, reset_token_expires
+      FROM users
+      WHERE reset_token = ?
+      `,
+      [token]
+    );
+
+    if (users.length === 0) {
+      return res.status(400).json({
+        message: "Invalid or expired reset token",
+      });
+    }
+
+    const user = users[0];
+
+    if (
+      !user.reset_token_expires ||
+      new Date(user.reset_token_expires) < new Date()
+    ) {
+      return res.status(400).json({
+        message: "Reset token has expired",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(
+      password,
+      10
+    );
+
+    await db.query(
+      `
+      UPDATE users
+      SET
+        password = ?,
+        reset_token = NULL,
+        reset_token_expires = NULL
+      WHERE id = ?
+      `,
+      [hashedPassword, user.id]
+    );
+
+    return res.status(200).json({
+      message: "Password reset successfully",
+    });
+  } catch (error) {
+    console.error(
+      "Reset password error:",
+      error
+    );
+
+    return res.status(500).json({
+      message:
+        "Server error during password reset",
     });
   }
 };

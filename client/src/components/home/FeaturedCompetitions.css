@@ -66,7 +66,8 @@
   min-height: 55px;
 }
 
-.competition-card button {
+.competition-card button,
+.competition-link-btn {
   margin-top: 25px;
   padding: 12px 24px;
   border: none;
@@ -76,6 +77,7 @@
   font-weight: 700;
   font-size: 15px;
   cursor: pointer;
+  text-decoration: none;
 
   display: inline-flex;
   align-items: center;
@@ -84,8 +86,10 @@
   transition: all 0.3s ease;
 }
 
-.competition-card button:hover {
+.competition-card button:hover,
+.competition-link-btn:hover {
   transform: scale(1.05);
+  background: #d9ff5e;
 }
 
 @media (max-width: 1100px) {

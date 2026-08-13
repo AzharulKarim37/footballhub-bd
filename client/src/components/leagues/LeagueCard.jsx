@@ -1,64 +1,58 @@
 import "./LeagueCard.css";
 import { Link } from "react-router-dom";
+import bpl from "../../assets/logos/bpl.jpg";
+import federation from "../../assets/logos/federation-cup.jpg";
+import ucl from "../../assets/logos/ucl.webp";
+import bangladesh from "../../assets/logos/bangladesh.png";
 
-import bplLogo from "../../assets/logos/bpl.jpg";
-import uclLogo from "../../assets/logos/ucl.webp";
-import fedCupLogo from "../../assets/logos/federation-cup.jpg";
-
-const getLeagueLogo = (leagueName) => {
-  if (!leagueName) return null;
-  const name = leagueName.toLowerCase();
-  if (name.includes('bpl') || name.includes('bangladesh premier league')) return bplLogo;
-  if (name.includes('ucl') || name.includes('champions league')) return uclLogo;
-  if (name.includes('federation')) return fedCupLogo;
-  return null;
+const logoMap = {
+  bpl,
+  "federation-cup": federation,
+  ucl,
+  bangladesh,
 };
 
 function LeagueCard({ league }) {
+  const logoSrc =
+    league.logo && typeof league.logo === "string" && (league.logo.startsWith("data:") || league.logo.startsWith("blob:") || league.logo.startsWith("http"))
+      ? league.logo
+      : logoMap[league.id] || league.logo || bpl;
+
   return (
     <div className="league-card">
-
       <div className="league-logo-wrapper">
-        <img src={getLeagueLogo(league.name) || league.logo} alt={league.name} className="league-logo" />
+        <img src={logoSrc} alt={league.name} className="league-logo" />
       </div>
 
       <h2>{league.name}</h2>
 
-      <p className="league-description">
-        {league.description}
-      </p>
+      <p className="league-description">{league.description}</p>
 
       <div className="league-info">
-
         <div>
           <span>🌍 Country</span>
-          <strong>{league.country}</strong>
+          <strong>{league.country || "Bangladesh"}</strong>
         </div>
 
         <div>
           <span>⚽ Clubs</span>
-          <strong>{league.clubs}</strong>
+          <strong>{league.clubs || 0}</strong>
         </div>
 
         <div>
           <span>📅 Season</span>
-          <strong>{league.season}</strong>
+          <strong>{league.season || "2025-26"}</strong>
         </div>
 
         <div>
           <span>🏆 Champion</span>
-          <strong>{league.champion}</strong>
+          <strong>{league.champion || "TBD"}</strong>
         </div>
-
       </div>
 
-      <Link
-    to={`/leagues/${league.id}`}
-    className="league-btn"
->
-    View Competition →
-</Link>
-
+      <Link to={`/leagues/${league.id}`} className="league-btn">
+        View Competition →
+      </Link>
     </div>
   );
 }

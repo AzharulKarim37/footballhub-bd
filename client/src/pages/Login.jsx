@@ -213,6 +213,10 @@ function Login() {
             <input type="checkbox" />
             Remember me
           </label>
+
+          <Link to="/forgot-password">
+            Forgot Password?
+          </Link>
         </div>
 
         <button

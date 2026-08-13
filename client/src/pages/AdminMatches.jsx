@@ -17,20 +17,6 @@ function AdminMatches() {
 
   const [showModal, setShowModal] = useState(false);
   const [editingMatch, setEditingMatch] = useState(null);
-  
-  // Stats Modal
-  const [showStatsModal, setShowStatsModal] = useState(false);
-  const [editingStatsMatch, setEditingStatsMatch] = useState(null);
-  const [statsData, setStatsData] = useState({
-    possession_home: 50, possession_away: 50,
-    shots_home: 0, shots_away: 0,
-    shots_on_target_home: 0, shots_on_target_away: 0,
-    corners_home: 0, corners_away: 0,
-    corners_home: 0, corners_away: 0,
-    yellows_home: 0, yellows_away: 0,
-    timeline: []
-  });
-
   const [formData, setFormData] = useState({
     league: "Bangladesh Premier League",
     stage: "Matchday 15",
@@ -124,64 +110,6 @@ function AdminMatches() {
       fetchMatches();
     } catch (err) {
       alert("Failed to save match: " + (err.response?.data?.message || err.message));
-    }
-  };
-
-  const handleOpenStatsModal = (match) => {
-    setEditingStatsMatch(match);
-    let stats = match.stats || {};
-    if (typeof stats === 'string') {
-      try { stats = JSON.parse(stats); } catch(e) {}
-    }
-    let timeline = match.timeline || [];
-    if (typeof timeline === 'string') {
-      try { timeline = JSON.parse(timeline); } catch(e) {}
-    }
-    
-    setStatsData({
-      possession_home: stats.possession_home ?? 50,
-      possession_away: stats.possession_away ?? 50,
-      shots_home: stats.shots_home ?? 0,
-      shots_away: stats.shots_away ?? 0,
-      shots_on_target_home: stats.shots_on_target_home ?? 0,
-      shots_on_target_away: stats.shots_on_target_away ?? 0,
-      corners_home: stats.corners_home ?? 0,
-      corners_away: stats.corners_away ?? 0,
-      yellows_home: stats.yellows_home ?? 0,
-      yellows_away: stats.yellows_away ?? 0,
-      timeline: Array.isArray(timeline) ? timeline : []
-    });
-    setShowStatsModal(true);
-  };
-
-  const handleSaveStats = async (e) => {
-    e.preventDefault();
-    const token = getToken();
-    const timelineArray = statsData.timeline.filter(t => t.minute && t.type && t.player);
-    const payload = {
-      stats: {
-        possession_home: Number(statsData.possession_home),
-        possession_away: Number(statsData.possession_away),
-        shots_home: Number(statsData.shots_home),
-        shots_away: Number(statsData.shots_away),
-        shots_on_target_home: Number(statsData.shots_on_target_home),
-        shots_on_target_away: Number(statsData.shots_on_target_away),
-        corners_home: Number(statsData.corners_home),
-        corners_away: Number(statsData.corners_away),
-        yellows_home: Number(statsData.yellows_home),
-        yellows_away: Number(statsData.yellows_away),
-      },
-      timeline: timelineArray
-    };
-    
-    try {
-      await axios.put(`${API_URL}/${editingStatsMatch.id}`, payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setShowStatsModal(false);
-      fetchMatches();
-    } catch (err) {
-      alert("Failed to save stats: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -320,11 +248,6 @@ function AdminMatches() {
                           <button className="btn-edit" onClick={() => handleOpenModal(m)}>
                             Edit
                           </button>
-                          {m.status !== "UPCOMING" && (
-                            <button className="btn-edit" style={{background: '#176b43'}} onClick={() => handleOpenStatsModal(m)}>
-                              Stats
-                            </button>
-                          )}
                           <button className="btn-delete" onClick={() => handleDelete(m.id, `${m.home} vs ${m.away}`)}>
                             Delete
                           </button>
@@ -447,104 +370,6 @@ function AdminMatches() {
                   </button>
                   <button type="submit" className="btn-primary">
                     {editingMatch ? "Save Changes" : "Create Match"}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* STATS MODAL */}
-        {showStatsModal && (
-          <div className="modal-overlay">
-            <div className="modal-content" style={{maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto'}}>
-              <h2>Edit Statistics & Timeline</h2>
-              <form onSubmit={handleSaveStats}>
-                
-                <h4 style={{marginTop: '20px', marginBottom: '10px', color: '#102e21'}}>Match Statistics</h4>
-                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', alignItems: 'center'}}>
-                  <div style={{textAlign: 'center', fontWeight: 'bold'}}>{editingStatsMatch.home} (Home)</div>
-                  <div style={{textAlign: 'center'}}>VS</div>
-                  <div style={{textAlign: 'center', fontWeight: 'bold'}}>{editingStatsMatch.away} (Away)</div>
-                  
-                  <input type="number" required value={statsData.possession_home} onChange={e => setStatsData({...statsData, possession_home: e.target.value})} />
-                  <div style={{textAlign: 'center'}}>Possession %</div>
-                  <input type="number" required value={statsData.possession_away} onChange={e => setStatsData({...statsData, possession_away: e.target.value})} />
-                  
-                  <input type="number" required value={statsData.shots_home} onChange={e => setStatsData({...statsData, shots_home: e.target.value})} />
-                  <div style={{textAlign: 'center'}}>Shots</div>
-                  <input type="number" required value={statsData.shots_away} onChange={e => setStatsData({...statsData, shots_away: e.target.value})} />
-                  
-                  <input type="number" required value={statsData.shots_on_target_home} onChange={e => setStatsData({...statsData, shots_on_target_home: e.target.value})} />
-                  <div style={{textAlign: 'center'}}>Shots on Target</div>
-                  <input type="number" required value={statsData.shots_on_target_away} onChange={e => setStatsData({...statsData, shots_on_target_away: e.target.value})} />
-                  
-                  <input type="number" required value={statsData.corners_home} onChange={e => setStatsData({...statsData, corners_home: e.target.value})} />
-                  <div style={{textAlign: 'center'}}>Corners</div>
-                  <input type="number" required value={statsData.corners_away} onChange={e => setStatsData({...statsData, corners_away: e.target.value})} />
-                  
-                  <input type="number" required value={statsData.yellows_home} onChange={e => setStatsData({...statsData, yellows_home: e.target.value})} />
-                  <div style={{textAlign: 'center'}}>Yellow Cards</div>
-                  <input type="number" required value={statsData.yellows_away} onChange={e => setStatsData({...statsData, yellows_away: e.target.value})} />
-                </div>
-
-                <h4 style={{marginTop: '30px', marginBottom: '10px', color: '#102e21'}}>Timeline Events</h4>
-                {statsData.timeline.map((event, index) => (
-                  <div key={index} style={{display: 'flex', gap: '10px', marginBottom: '10px', alignItems: 'center'}}>
-                    <input 
-                      type="text" 
-                      placeholder="Min (e.g. 18')" 
-                      value={event.minute} 
-                      onChange={(e) => {
-                        const newTimeline = [...statsData.timeline];
-                        newTimeline[index].minute = e.target.value;
-                        setStatsData({...statsData, timeline: newTimeline});
-                      }}
-                      style={{width: '80px'}}
-                    />
-                    <select 
-                      value={event.type}
-                      onChange={(e) => {
-                        const newTimeline = [...statsData.timeline];
-                        newTimeline[index].type = e.target.value;
-                        setStatsData({...statsData, timeline: newTimeline});
-                      }}
-                    >
-                      <option value="Goal">Goal ⚽</option>
-                      <option value="Yellow Card">Yellow Card 🟨</option>
-                      <option value="Red Card">Red Card 🟥</option>
-                      <option value="Substitution">Substitution 🔄</option>
-                    </select>
-                    <input 
-                      type="text" 
-                      placeholder="Player (e.g. Messi)" 
-                      value={event.player} 
-                      onChange={(e) => {
-                        const newTimeline = [...statsData.timeline];
-                        newTimeline[index].player = e.target.value;
-                        setStatsData({...statsData, timeline: newTimeline});
-                      }}
-                      style={{flex: 1}}
-                    />
-                    <button type="button" onClick={() => {
-                      const newTimeline = statsData.timeline.filter((_, i) => i !== index);
-                      setStatsData({...statsData, timeline: newTimeline});
-                    }} style={{color: 'red', background: 'none', border: 'none', cursor: 'pointer'}}>✖</button>
-                  </div>
-                ))}
-                
-                <button type="button" onClick={() => {
-                  setStatsData({...statsData, timeline: [...statsData.timeline, {minute: '', type: 'Goal', player: ''}]});
-                }} style={{marginTop: '10px', padding: '8px 15px', background: '#e0e0e0', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>
-                  + Add Event
-                </button>
-
-                <div className="modal-actions" style={{marginTop: '30px'}}>
-                  <button type="button" className="btn-secondary" onClick={() => setShowStatsModal(false)}>
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn-primary">
-                    Save Stats
                   </button>
                 </div>
               </form>

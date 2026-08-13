@@ -1,53 +1,97 @@
-import { useState, useEffect } from "react";
-import PageHero from "../components/common/PageHero";
-import LeagueCard from "../components/leagues/LeagueCard";
+import { useEffect, useState } from "react";
 import { fetchLeagues } from "../services/api";
+import LeagueCard from "../components/leagues/LeagueCard";
+import { Trophy, Globe, Flame } from "lucide-react";
 import "./Leagues.css";
 
 function Leagues() {
-  const [search, setSearch] = useState("");
-  const [leagueList, setLeagueList] = useState([]);
+  const [leagues, setLeagues] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedFilter, setSelectedFilter] = useState("ALL");
 
   useEffect(() => {
-    fetchLeagues()
-      .then((data) => {
-        setLeagueList(data || []);
+    const loadLeagues = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchLeagues();
+        setLeagues(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Error loading leagues:", err);
+      } finally {
         setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+      }
+    };
+    loadLeagues();
   }, []);
 
-  const filteredLeagues = leagueList.filter((league) =>
-    league.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredLeagues = leagues.filter((league) => {
+    if (selectedFilter === "BANGLADESH") {
+      return league.country === "Bangladesh";
+    }
+    if (selectedFilter === "INTERNATIONAL") {
+      return league.country !== "Bangladesh";
+    }
+    return true;
+  });
 
   return (
     <div className="leagues-page">
-      <PageHero
-        title="Football Competitions"
-        subtitle="Explore Bangladesh Premier League, Federation Cup and UEFA Champions League."
-        placeholder="Search Competition..."
-        search={search}
-        setSearch={setSearch}
-      />
+      {/* Hero Header */}
+      <div className="leagues-hero">
+        <div className="leagues-hero-badge">
+          <Trophy size={16} />
+          <span>MAJOR COMPETITIONS</span>
+        </div>
+        <h1>
+          Football Leagues &amp; <span>Tournaments</span>
+        </h1>
+        <p className="leagues-hero-sub">
+          Explore complete league standings, fixtures, top goalscorers, team forms, and comprehensive statistics across domestic and international competitions.
+        </p>
 
-      {loading ? (
-        <div style={{ textAlign: "center", color: "#00ff87", padding: "50px", fontSize: "18px" }}>
-          Loading Competitions...
+        {/* Filter Pills */}
+        <div className="leagues-filter-bar">
+          <button
+            className={`leagues-filter-btn ${selectedFilter === "ALL" ? "active" : ""}`}
+            onClick={() => setSelectedFilter("ALL")}
+          >
+            <Flame size={16} /> All Competitions ({leagues.length})
+          </button>
+          <button
+            className={`leagues-filter-btn ${selectedFilter === "BANGLADESH" ? "active" : ""}`}
+            onClick={() => setSelectedFilter("BANGLADESH")}
+          >
+            🇧🇩 Bangladesh Domestic
+          </button>
+          <button
+            className={`leagues-filter-btn ${selectedFilter === "INTERNATIONAL" ? "active" : ""}`}
+            onClick={() => setSelectedFilter("INTERNATIONAL")}
+          >
+            <Globe size={16} /> International
+          </button>
         </div>
-      ) : (
-        <div className="league-grid">
-          {filteredLeagues.map((league) => (
-            <LeagueCard
-              key={league.id}
-              league={league}
-            />
-          ))}
-        </div>
-      )}
+      </div>
+
+      {/* Content */}
+      <div className="leagues-content-container">
+        {loading ? (
+          <div className="leagues-loading">
+            <div className="leagues-spinner" />
+            <p>Loading Competitions...</p>
+          </div>
+        ) : filteredLeagues.length === 0 ? (
+          <div className="leagues-empty">
+            <h3>No Competitions Found</h3>
+            <p>No leagues match the current filter.</p>
+          </div>
+        ) : (
+          <div className="league-grid">
+            {filteredLeagues.map((league) => (
+              <LeagueCard key={league.id} league={league} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

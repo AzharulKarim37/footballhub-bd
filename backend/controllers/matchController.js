@@ -52,15 +52,15 @@ export const getMatchById = async (req, res) => {
 // Create new match
 export const createMatch = async (req, res) => {
   try {
-    const { league, league_id, stage, status, date, time, home, away, homeScore, awayScore, minute, stadium, stats, timeline } = req.body;
+    const { league, league_id, stage, status, date, time, home, away, homeScore, awayScore, minute, stadium } = req.body;
 
     if (!league || !home || !away || !status) {
       return res.status(400).json({ message: "League, home team, away team, and status are required" });
     }
 
     const [result] = await db.query(
-      `INSERT INTO matches (league, league_id, stage, status, date, time, home, away, homeScore, awayScore, minute, stadium, stats, timeline)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO matches (league, league_id, stage, status, date, time, home, away, homeScore, awayScore, minute, stadium)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         league,
         league_id || "bpl",
@@ -70,12 +70,10 @@ export const createMatch = async (req, res) => {
         time || "20:00",
         home,
         away,
-        homeScore !== undefined && homeScore !== "" ? homeScore : null,
-        awayScore !== undefined && awayScore !== "" ? awayScore : null,
-        minute !== undefined && minute !== "" ? minute : null,
+        homeScore !== undefined ? homeScore : null,
+        awayScore !== undefined ? awayScore : null,
+        minute || null,
         stadium || "Main Stadium",
-        stats ? JSON.stringify(stats) : null,
-        timeline ? JSON.stringify(timeline) : null,
       ]
     );
 
@@ -91,7 +89,7 @@ export const createMatch = async (req, res) => {
 export const updateMatch = async (req, res) => {
   const { id } = req.params;
   try {
-    const { league, league_id, stage, status, date, time, home, away, homeScore, awayScore, minute, stadium, stats, timeline } = req.body;
+    const { league, league_id, stage, status, date, time, home, away, homeScore, awayScore, minute, stadium } = req.body;
 
     const [existing] = await db.query("SELECT * FROM matches WHERE id = ?", [id]);
     if (existing.length === 0) {
@@ -100,7 +98,7 @@ export const updateMatch = async (req, res) => {
 
     await db.query(
       `UPDATE matches 
-       SET league = ?, league_id = ?, stage = ?, status = ?, date = ?, time = ?, home = ?, away = ?, homeScore = ?, awayScore = ?, minute = ?, stadium = ?, stats = ?, timeline = ?
+       SET league = ?, league_id = ?, stage = ?, status = ?, date = ?, time = ?, home = ?, away = ?, homeScore = ?, awayScore = ?, minute = ?, stadium = ?
        WHERE id = ?`,
       [
         league || existing[0].league,
@@ -111,12 +109,10 @@ export const updateMatch = async (req, res) => {
         time || existing[0].time,
         home || existing[0].home,
         away || existing[0].away,
-        homeScore !== undefined && homeScore !== "" ? homeScore : existing[0].homeScore,
-        awayScore !== undefined && awayScore !== "" ? awayScore : existing[0].awayScore,
-        minute !== undefined && minute !== "" ? minute : existing[0].minute,
+        homeScore !== undefined ? homeScore : existing[0].homeScore,
+        awayScore !== undefined ? awayScore : existing[0].awayScore,
+        minute !== undefined ? minute : existing[0].minute,
         stadium || existing[0].stadium,
-        stats ? JSON.stringify(stats) : existing[0].stats,
-        timeline ? JSON.stringify(timeline) : existing[0].timeline,
         id,
       ]
     );

@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 function TeamCard({ team }) {
   return (
     <div
@@ -34,21 +32,19 @@ function TeamCard({ team }) {
 
         <p><strong>Founded:</strong> {team.founded}</p>
 
-        <Link to={`/teams/${team.id}`} style={{ textDecoration: "none" }}>
-          <button
-            style={{
-              marginTop: "10px",
-              background: "#16a34a",
-              color: "white",
-              border: "none",
-              padding: "10px 18px",
-              borderRadius: "6px",
-              cursor: "pointer",
-            }}
-          >
-            View Club
-          </button>
-        </Link>
+        <button
+          style={{
+            marginTop: "10px",
+            background: "#16a34a",
+            color: "white",
+            border: "none",
+            padding: "10px 18px",
+            borderRadius: "6px",
+            cursor: "pointer",
+          }}
+        >
+          View Club
+        </button>
       </div>
     </div>
   );

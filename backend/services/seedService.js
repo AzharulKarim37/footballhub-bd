@@ -49,24 +49,6 @@ export const initAndSeedDatabase = async () => {
     `);
 
     // ======================================================
-    // 2.5. LEAGUE SEASON STATS TABLE
-    // ======================================================
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS league_season_stats (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        league_id VARCHAR(50) NOT NULL,
-        season VARCHAR(20) NOT NULL,
-        matches_played INT DEFAULT 0,
-        total_goals INT DEFAULT 0,
-        yellow_cards INT DEFAULT 0,
-        red_cards INT DEFAULT 0,
-        clean_sheets INT DEFAULT 0,
-        champion VARCHAR(100) DEFAULT '',
-        UNIQUE KEY league_season (league_id, season)
-      )
-    `);
-
-    // ======================================================
     // 3. LEAGUE STANDINGS TABLE
     // ======================================================
     await db.query(`
@@ -83,8 +65,7 @@ export const initAndSeedDatabase = async () => {
         ga INT DEFAULT 0,
         gd INT DEFAULT 0,
         points INT DEFAULT 0,
-        form VARCHAR(100) DEFAULT 'W,W,D,W,W',
-        season VARCHAR(20) DEFAULT '2025-26'
+        form VARCHAR(100) DEFAULT 'W,W,D,W,W'
       )
     `);
 
@@ -98,8 +79,7 @@ export const initAndSeedDatabase = async () => {
         rank_no INT NOT NULL,
         player VARCHAR(100) NOT NULL,
         club VARCHAR(100) NOT NULL,
-        goals INT DEFAULT 0,
-        season VARCHAR(20) DEFAULT '2025-26'
+        goals INT DEFAULT 0
       )
     `);
 
@@ -121,8 +101,6 @@ export const initAndSeedDatabase = async () => {
         awayScore INT DEFAULT NULL,
         minute VARCHAR(20) DEFAULT NULL,
         stadium VARCHAR(150),
-        stats JSON,
-        timeline JSON,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
@@ -139,7 +117,6 @@ export const initAndSeedDatabase = async () => {
         stadium VARCHAR(100),
         founded INT,
         logo VARCHAR(255),
-        trophies TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
@@ -156,8 +133,6 @@ export const initAndSeedDatabase = async () => {
         number INT DEFAULT 10,
         image VARCHAR(255),
         nationality VARCHAR(50) DEFAULT 'Bangladesh',
-        dob DATE DEFAULT NULL,
-        market_value VARCHAR(50) DEFAULT NULL,
         goals INT DEFAULT 0,
         assists INT DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -173,7 +148,6 @@ export const initAndSeedDatabase = async () => {
         title VARCHAR(255) NOT NULL,
         description TEXT,
         difficulty VARCHAR(50) DEFAULT 'Medium',
-        deadline DATETIME DEFAULT NULL,
         time_limit INT DEFAULT 10,
         category VARCHAR(100) DEFAULT 'Football',
         status ENUM('draft', 'published', 'stopped') DEFAULT 'draft',
@@ -225,45 +199,6 @@ export const initAndSeedDatabase = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
-
-    // ======================================================
-    // 12. USER MESSAGES TABLE
-    // ======================================================
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS user_messages (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT NOT NULL,
-        quiz_id INT DEFAULT NULL,
-        title VARCHAR(255) NOT NULL,
-        content TEXT NOT NULL,
-        type VARCHAR(50) DEFAULT 'MESSAGE',
-        status VARCHAR(50) DEFAULT 'UNREAD',
-        form_fields JSON DEFAULT NULL,
-        claim_data JSON DEFAULT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-        FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE SET NULL
-      )
-    `);
-
-    // ======================================================
-    // DYNAMIC COLUMN MIGRATIONS (For existing tables)
-    // ======================================================
-    const addColumnIfNotExist = async (tableName, columnName, columnDefinition) => {
-      const [cols] = await db.query(`SHOW COLUMNS FROM \`${tableName}\` LIKE ?`, [columnName]);
-      if (cols.length === 0) {
-        console.log(`🔧 Adding column ${columnName} to ${tableName}...`);
-        await db.query(`ALTER TABLE \`${tableName}\` ADD COLUMN ${columnDefinition}`);
-        console.log(`✅ Added column ${columnName} to ${tableName}`);
-      }
-    };
-
-    await addColumnIfNotExist("quizzes", "deadline", "deadline DATETIME DEFAULT NULL AFTER difficulty");
-    await addColumnIfNotExist("league_standings", "season", "season VARCHAR(20) DEFAULT '2025-26'");
-    await addColumnIfNotExist("top_scorers", "season", "season VARCHAR(20) DEFAULT '2025-26'");
-    await addColumnIfNotExist("matches", "stats", "stats JSON DEFAULT NULL");
-    await addColumnIfNotExist("matches", "timeline", "timeline JSON DEFAULT NULL");
-    await addColumnIfNotExist("quiz_attempts", "user_answers_json", "user_answers_json JSON DEFAULT NULL");
 
     // ======================================================
     // SEED DATA — only if tables are empty

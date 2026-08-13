@@ -11,8 +11,6 @@ import leagueRoutes from "./routes/leagueRoutes.js";
 import matchRoutes from "./routes/matchRoutes.js";
 import teamRoutes from "./routes/teamRoutes.js";
 import playerRoutes from "./routes/playerRoutes.js";
-import newsRoutes from "./routes/newsRoutes.js";
-import messageRoutes from "./routes/messageRoutes.js";
 
 dotenv.config();
 
@@ -22,21 +20,33 @@ const app = express();
 // MIDDLEWARE
 // ======================================================
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "http://localhost:5174",
+  "http://127.0.0.1:5174",
+  process.env.CLIENT_URL,
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (Postman, curl, server-to-server)
+      // Allow requests with no origin (like mobile apps, curl, Postman)
       if (!origin) return callback(null, true);
 
-      // Allow localhost and 127.0.0.1 on any port during development
-      const isLocalDev =
-        /^https?:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
-
-      if (isLocalDev) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.startsWith("http://localhost:") ||
+        origin.startsWith("http://127.0.0.1:") ||
+        process.env.NODE_ENV !== "production"
+      ) {
+        return callback(null, true);
       }
+
+      return callback(new Error("CORS policy violation: Origin not allowed"), false);
     },
     credentials: true,
   })
@@ -72,12 +82,6 @@ app.use("/api/leagues", leagueRoutes);
 app.use("/api/matches", matchRoutes);
 app.use("/api/teams", teamRoutes);
 app.use("/api/players", playerRoutes);
-
-// Your News Page
-app.use("/api/news", newsRoutes);
-
-// Partner's Message System
-app.use("/api/messages", messageRoutes);
 
 // ======================================================
 // HOME

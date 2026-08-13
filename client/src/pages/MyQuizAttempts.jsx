@@ -197,19 +197,10 @@ function MyQuizAttempts() {
                       <Link
                         to={`/quiz/${attempt.quiz_id}/leaderboard`}
                         className="home-btn"
-                        style={{ marginTop: '10px', display: 'block' }}
                       >
                         View Leaderboard
                       </Link>
                     )}
-
-                    <Link
-                      to={`/attempt/${attempt.quiz_id}/${attempt.attempt_id}`}
-                      className="home-btn"
-                      style={{ marginTop: '10px', display: 'block', background: '#0a1711', color: '#00ff87' }}
-                    >
-                      Review Answers
-                    </Link>
                   </div>
                 </div>
               );

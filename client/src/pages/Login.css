@@ -1,141 +1,411 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap");
+
+/* ======================================================
+   PAGE — floodlit pitch backdrop
+====================================================== */
+
 .auth-page {
+  position: relative;
   min-height: calc(100vh - 80px);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 50px 20px;
-  background: #f4f7f5;
+  padding: 60px 20px;
+  background: #05110a;
+  overflow: hidden;
+  font-family: "Inter", Arial, sans-serif;
 }
 
-.auth-container {
+/* stadium floodlight glow */
+.auth-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(600px 380px at 18% 8%, rgba(183, 255, 0, 0.10), transparent 60%),
+    radial-gradient(700px 460px at 85% 95%, rgba(23, 107, 67, 0.35), transparent 60%);
+  pointer-events: none;
+}
+
+/* faint pitch markings */
+.auth-page::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 640px;
+  height: 640px;
+  border: 2px solid rgba(183, 255, 0, 0.06);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* ======================================================
+   TICKET — the signature element
+====================================================== */
+
+.ticket {
+  position: relative;
+  z-index: 1;
   width: 100%;
-  max-width: 460px;
-  background: white;
-  padding: 40px;
-  border-radius: 18px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  max-width: 860px;
+  display: flex;
+  border-radius: 22px;
+  overflow: visible;
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(183, 255, 0, 0.08);
+}
+
+/* ---------- Left stub ---------- */
+
+.ticket-stub {
+  position: relative;
+  flex: 0 0 210px;
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(183, 255, 0, 0.14), transparent 55%),
+    linear-gradient(165deg, #0d2c1a 0%, #071b10 75%);
+  border-radius: 22px 0 0 22px;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #eafff0;
+}
+
+.ticket-stub .crest {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.4));
+}
+
+.ticket-eyebrow {
+  margin-top: 18px;
+  font-family: "Anton", "Inter", sans-serif;
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: #b7ff00;
+}
+
+.ticket-stub-mid {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  margin: 22px 0;
+}
+
+.ticket-stub-mid span {
+  font-family: "Anton", "Inter", sans-serif;
+  font-size: 15px;
+  letter-spacing: 6px;
+  color: rgba(234, 255, 240, 0.55);
+  white-space: nowrap;
+}
+
+.ticket-meta {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: rgba(234, 255, 240, 0.45);
+  margin-bottom: 12px;
+}
+
+.ticket-meta b {
+  display: block;
+  font-size: 12px;
+  color: #eafff0;
+  letter-spacing: 0.5px;
+}
+
+.ticket-barcode {
+  width: 100%;
+  height: 34px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(234, 255, 240, 0.9) 0px,
+    rgba(234, 255, 240, 0.9) 2px,
+    transparent 2px,
+    transparent 5px,
+    rgba(234, 255, 240, 0.9) 5px,
+    rgba(234, 255, 240, 0.9) 6px,
+    transparent 6px,
+    transparent 10px
+  );
+  opacity: 0.8;
+}
+
+/* ---------- Perforation seam ---------- */
+
+.ticket-perforation {
+  position: relative;
+  flex: 0 0 0;
+  border-left: 2px dashed rgba(234, 255, 240, 0.18);
+}
+
+.ticket-perforation::before,
+.ticket-perforation::after {
+  content: "";
+  position: absolute;
+  left: -14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #05110a;
+}
+
+.ticket-perforation::before {
+  top: -14px;
+}
+
+.ticket-perforation::after {
+  bottom: -14px;
+}
+
+/* ---------- Right panel (form) ---------- */
+
+.ticket-form-panel {
+  flex: 1;
+  background: #0a1f14;
+  border-radius: 0 22px 22px 0;
+  padding: 44px 46px;
+  min-width: 0;
 }
 
 .auth-brand {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.auth-brand img {
-  width: 75px;
-  height: 75px;
-  object-fit: contain;
-  margin-bottom: 15px;
+  margin-bottom: 26px;
 }
 
 .auth-brand h1 {
-  margin: 0;
-  font-size: 30px;
-  color: #123d2a;
+  margin: 6px 0 0;
+  font-family: "Anton", "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 34px;
+  letter-spacing: 0.5px;
+  color: #f4fff7;
 }
 
 .auth-brand p {
   margin-top: 8px;
-  color: #777;
+  color: #7d9788;
   font-size: 14px;
 }
+
+.auth-error {
+  background: rgba(255, 92, 92, 0.1);
+  border: 1px solid rgba(255, 92, 92, 0.3);
+  color: #ff9d9d;
+  padding: 11px 14px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  font-size: 13.5px;
+}
+
+/* ======================================================
+   FORM
+====================================================== */
 
 .auth-form {
   width: 100%;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 7px;
   font-weight: 600;
-  color: #333;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  color: #b7c8bd;
+}
+
+.field-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.field-icon {
+  position: absolute;
+  left: 14px;
+  width: 18px;
+  height: 18px;
+  color: #5f8a6c;
+  pointer-events: none;
 }
 
 .form-group input {
   width: 100%;
   box-sizing: border-box;
-  padding: 13px 14px;
-  border: 1px solid #d7ddd9;
-  border-radius: 9px;
-  font-size: 15px;
+  padding: 13px 14px 13px 42px;
+  background: #0f2818;
+  border: 1px solid #1f4a30;
+  border-radius: 10px;
+  font-size: 14.5px;
+  color: #eafff0;
   outline: none;
-  transition: 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.form-group input::placeholder {
+  color: #52705d;
 }
 
 .form-group input:focus {
-  border-color: #176b43;
-  box-shadow: 0 0 0 3px rgba(23, 107, 67, 0.1);
-}
-
-.password-wrapper {
-  position: relative;
+  border-color: #b7ff00;
+  background: #102b1a;
+  box-shadow: 0 0 0 3px rgba(183, 255, 0, 0.15);
 }
 
 .password-wrapper input {
-  padding-right: 65px;
+  padding-right: 44px;
 }
 
 .password-toggle {
   position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   background: transparent;
-  color: #176b43;
-  font-weight: 600;
+  color: #6ea87c;
   cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.2s;
 }
+
+.password-toggle:hover {
+  color: #b7ff00;
+}
+
+/* ---------- Options row ---------- */
 
 .auth-options {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 5px 0 25px;
+  margin: 4px 0 24px;
   font-size: 13px;
-}
-
-.auth-options a {
-  color: #176b43;
-  text-decoration: none;
-  font-weight: 600;
 }
 
 .remember-me {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
-  color: #666;
+  color: #93a89b;
+  cursor: pointer;
+  user-select: none;
 }
 
+.remember-me input[type="checkbox"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #3a5c46;
+  border-radius: 4px;
+  background: #0f2818;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.remember-me input[type="checkbox"]:checked {
+  background: #b7ff00;
+  border-color: #b7ff00;
+}
+
+.remember-me input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid #05110a;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.auth-options a {
+  color: #b7ff00;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-options a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Submit ---------- */
+
 .auth-submit {
+  position: relative;
   width: 100%;
   padding: 14px;
   border: none;
-  border-radius: 9px;
-  background: #176b43;
-  color: white;
-  font-size: 16px;
-  font-weight: 700;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #c8ff33 0%, #a3e000 100%);
+  color: #05110a;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
   cursor: pointer;
-  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 10px 24px rgba(183, 255, 0, 0.18);
 }
 
-.auth-submit:hover {
-  background: #0f5232;
+.auth-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(183, 255, 0, 0.28);
 }
+
+.auth-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.auth-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.auth-submit svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+
+.auth-submit:hover:not(:disabled) svg {
+  transform: translateX(3px);
+}
+
+/* ---------- Divider / switch ---------- */
 
 .auth-divider {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 25px 0;
-  color: #aaa;
-  font-size: 12px;
+  margin: 24px 0;
+  color: #4d6a58;
+  font-size: 11px;
+  letter-spacing: 1px;
 }
 
 .auth-divider::before,
@@ -143,28 +413,99 @@
   content: "";
   flex: 1;
   height: 1px;
-  background: #ddd;
+  background: #1c3728;
 }
 
 .auth-switch {
   text-align: center;
-  color: #666;
+  color: #7d9788;
   font-size: 14px;
 }
 
 .auth-switch a {
   margin-left: 5px;
-  color: #176b43;
+  color: #b7ff00;
   font-weight: 700;
   text-decoration: none;
 }
 
-@media (max-width: 500px) {
-  .auth-container {
-    padding: 30px 22px;
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+/* ======================================================
+   RESPONSIVE — ticket folds to a boarding-pass strip
+====================================================== */
+
+@media (max-width: 760px) {
+  .ticket {
+    flex-direction: column;
+    border-radius: 20px;
+  }
+
+  .ticket-stub {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 20px 20px 0 0;
+    padding: 18px 22px;
+  }
+
+  .ticket-stub .crest {
+    width: 44px;
+    height: 44px;
+  }
+
+  .ticket-eyebrow {
+    margin: 0 0 0 14px;
+    font-size: 12px;
+  }
+
+  .ticket-stub-mid {
+    display: none;
+  }
+
+  .ticket-meta,
+  .ticket-barcode {
+    display: none;
+  }
+
+  .ticket-perforation {
+    flex: none;
+    height: 0;
+    border-left: none;
+    border-top: 2px dashed rgba(234, 255, 240, 0.18);
+  }
+
+  .ticket-perforation::before,
+  .ticket-perforation::after {
+    top: -14px;
+    left: auto;
+  }
+
+  .ticket-perforation::before {
+    left: -14px;
+  }
+
+  .ticket-perforation::after {
+    right: -14px;
+    left: auto;
+  }
+
+  .ticket-form-panel {
+    border-radius: 0 0 20px 20px;
+    padding: 34px 26px;
   }
 
   .auth-brand h1 {
-    font-size: 26px;
+    font-size: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-submit,
+  .auth-submit svg,
+  .password-toggle {
+    transition: none;
   }
 }

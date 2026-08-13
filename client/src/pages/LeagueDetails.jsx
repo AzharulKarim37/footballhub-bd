@@ -15,22 +15,18 @@ function LeagueDetails() {
   const { leagueId } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedSeason, setSelectedSeason] = useState("");
 
   useEffect(() => {
     setLoading(true);
-    fetchLeagueById(leagueId, selectedSeason)
+    fetchLeagueById(leagueId)
       .then((res) => {
         setData(res);
-        if (!selectedSeason && res.currentSeason) {
-          setSelectedSeason(res.currentSeason);
-        }
         setLoading(false);
       })
       .catch(() => {
         setLoading(false);
       });
-  }, [leagueId, selectedSeason]);
+  }, [leagueId]);
 
   if (loading) {
     return (
@@ -70,17 +66,12 @@ function LeagueDetails() {
     );
   }
 
-  const { league, standings, topScorers, recentMatches, upcomingFixtures, availableSeasons, currentSeason } = data;
+  const { league, standings, topScorers, recentMatches, upcomingFixtures } = data;
 
   return (
     <div className="league-details-page">
       {/* Banner */}
-      <LeagueBanner 
-        league={league} 
-        availableSeasons={availableSeasons} 
-        currentSeason={currentSeason} 
-        onSeasonChange={(s) => setSelectedSeason(s)} 
-      />
+      <LeagueBanner league={league} />
 
       {/* Statistics */}
       <LeagueStats league={league} />
@@ -88,7 +79,7 @@ function LeagueDetails() {
       {/* Standings + Top Scorers */}
       <div className="league-dashboard">
         <div className="dashboard-left">
-          <LeagueTable standings={standings || []} leagueName={league.name} />
+          <LeagueTable standings={standings || []} />
         </div>
 
         <div className="dashboard-right">

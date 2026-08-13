@@ -1,83 +1,59 @@
 import "./LeagueBanner.css";
-import bplLogo from "../../assets/logos/bpl.jpg";
-import uclLogo from "../../assets/logos/ucl.webp";
-import fedCupLogo from "../../assets/logos/federation-cup.jpg";
+import bpl from "../../assets/logos/bpl.jpg";
+import federation from "../../assets/logos/federation-cup.jpg";
+import ucl from "../../assets/logos/ucl.webp";
+import bangladesh from "../../assets/logos/bangladesh.png";
 
-const getLeagueLogo = (leagueName) => {
-  if (!leagueName) return null;
-  const name = leagueName.toLowerCase();
-  if (name.includes('bpl') || name.includes('bangladesh premier league')) return bplLogo;
-  if (name.includes('ucl') || name.includes('champions league')) return uclLogo;
-  if (name.includes('federation')) return fedCupLogo;
-  return null;
+const logoMap = {
+  bpl,
+  "federation-cup": federation,
+  ucl,
+  bangladesh,
 };
 
-function LeagueBanner({ league, availableSeasons, currentSeason, onSeasonChange }) {
+function LeagueBanner({ league }) {
+  const logoSrc =
+    league.logo && typeof league.logo === "string" && (league.logo.startsWith("data:") || league.logo.startsWith("blob:") || league.logo.startsWith("http"))
+      ? league.logo
+      : logoMap[league.id] || league.logo || bpl;
+
   return (
     <div className="league-banner">
-
       <div className="league-banner-left">
-
         <img
-          src={getLeagueLogo(league.name) || league.logo}
+          src={logoSrc}
           alt={league.name}
           className="league-banner-logo"
         />
-
       </div>
 
       <div className="league-banner-right">
-
         <h1>{league.name}</h1>
 
         <p>{league.description}</p>
 
         <div className="league-banner-info">
-
           <div>
             <span>Country</span>
-            <strong>{league.country}</strong>
+            <strong>{league.country || "Bangladesh"}</strong>
           </div>
 
-          <div className="season-selector-wrapper">
+          <div>
             <span>Season</span>
-            <strong>
-              <select 
-                value={currentSeason || league.season}
-                onChange={(e) => onSeasonChange && onSeasonChange(e.target.value)}
-                style={{
-                  background: 'transparent', 
-                  color: 'inherit', 
-                  border: 'none', 
-                  outline: 'none', 
-                  fontWeight: 'inherit', 
-                  fontSize: 'inherit',
-                  cursor: 'pointer'
-                }}
-              >
-                {availableSeasons && availableSeasons.length > 0 ? (
-                  availableSeasons.map(s => <option key={s} value={s} style={{color: 'black'}}>{s}</option>)
-                ) : (
-                  <option value={league.season} style={{color: 'black'}}>{league.season}</option>
-                )}
-              </select>
-            </strong>
+            <strong>{league.season || "2025-26"}</strong>
           </div>
 
           <div>
             <span>Clubs</span>
-            <strong>{league.clubs}</strong>
+            <strong>{league.clubs || 0}</strong>
           </div>
 
           <div>
             <span>Champion</span>
-            <strong>{league.champion}</strong>
+            <strong>{league.champion || "TBD"}</strong>
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 }

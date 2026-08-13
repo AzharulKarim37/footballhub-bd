@@ -1,17 +1,6 @@
 import "./LeagueTable.css";
 
-function LeagueTable({ standings, leagueName }) {
-  const getRowClass = (position) => {
-    if (!leagueName) return '';
-    const name = leagueName.toLowerCase();
-    if (name.includes('ucl') || name.includes('champions league')) {
-      if (position <= 8) return 'ucl-ro16';
-      if (position <= 24) return 'ucl-playoff';
-      return 'ucl-eliminated';
-    }
-    return '';
-  };
-
+function LeagueTable({ standings }) {
   return (
     <section className="league-table-section">
 
@@ -57,7 +46,7 @@ function LeagueTable({ standings, leagueName }) {
 
             {standings.map((team) => (
 
-              <tr key={team.position} className={getRowClass(team.position)}>
+              <tr key={team.position}>
 
                 <td>{team.position}</td>
 
@@ -98,17 +87,18 @@ function LeagueTable({ standings, leagueName }) {
 
                   <div className="form-column">
 
-                    {team.form.map((result, index) => (
-
+                    {(Array.isArray(team.form)
+                      ? team.form
+                      : typeof team.form === "string"
+                      ? team.form.split(",")
+                      : ["W", "D", "W", "W", "L"]
+                    ).map((result, index) => (
                       <span
                         key={index}
-                        className={`form ${result}`}
+                        className={`form ${result.trim()}`}
                       >
-
-                        {result}
-
+                        {result.trim()}
                       </span>
-
                     ))}
 
                   </div>

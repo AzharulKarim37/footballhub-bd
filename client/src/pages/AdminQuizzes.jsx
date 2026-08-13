@@ -35,20 +35,12 @@ function AdminQuizzes() {
 
   const [showAttempts, setShowAttempts] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const [showRewardsModal, setShowRewardsModal] = useState(false);
-  const [winnersCount, setWinnersCount] = useState(3);
-  const [activeRankTab, setActiveRankTab] = useState("1");
-  const [rankForms, setRankForms] = useState({
-    "1": ["Full Name", "Phone Number", "Shipping Address"],
-    "2": ["Full Name", "Phone Number", "Shipping Address"],
-    "3": ["Full Name", "Phone Number", "Shipping Address"],
-    "others": ["Full Name", "Phone Number", "Shipping Address"]
-  });
+
   const [quizForm, setQuizForm] = useState({
     title: "",
     description: "",
     difficulty: "Medium",
-    deadline: "",
+    time_limit: 10,
     category: "",
   });
 
@@ -179,8 +171,8 @@ function AdminQuizzes() {
         description: data.quiz.description || "",
         difficulty:
           data.quiz.difficulty || "Medium",
-        deadline:
-          data.quiz.deadline || "",
+        time_limit:
+          data.quiz.time_limit || 10,
         category:
           data.quiz.category || "",
       });
@@ -244,7 +236,9 @@ function AdminQuizzes() {
 
         body: JSON.stringify({
           ...quizForm,
-          deadline: quizForm.deadline,
+          time_limit: Number(
+            quizForm.time_limit
+          ),
         }),
       });
 
@@ -266,7 +260,7 @@ function AdminQuizzes() {
         title: "",
         description: "",
         difficulty: "Medium",
-        deadline: "",
+        time_limit: 10,
         category: "",
       });
 
@@ -317,7 +311,9 @@ function AdminQuizzes() {
 
           body: JSON.stringify({
             ...quizForm,
-            deadline: quizForm.deadline,
+            time_limit: Number(
+              quizForm.time_limit
+            ),
           }),
         }
       );
@@ -1012,47 +1008,59 @@ function AdminQuizzes() {
   // SEND REWARDS
   // ============================================================
 
-  const handleSendRewards = () => {
-    setWinnersCount(3);
-    setRankForms({
-      "1": ["Full Name", "Phone Number", "Shipping Address"],
-      "2": ["Full Name", "Phone Number", "Shipping Address"],
-      "3": ["Full Name", "Phone Number", "Shipping Address"],
-      "others": ["Full Name", "Phone Number", "Shipping Address"]
-    });
-    setActiveRankTab("1");
-    setShowRewardsModal(true);
-  };
-
-  const submitSendRewards = async () => {
+  const handleSendRewards = async () => {
     if (!selectedQuiz) return;
+
+    if (
+      !window.confirm(
+        "Send rewards to the top users of this quiz?"
+      )
+    ) {
+      return;
+    }
 
     try {
       setSendingRewards(true);
       clearMessages();
+
       const token = getToken();
 
-      const response = await fetch(`${API_URL}/${selectedQuiz.id}/rewards`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ winners_count: winnersCount, rank_forms: rankForms })
-      });
+      const response = await fetch(
+        `${API_URL}/${selectedQuiz.id}/rewards`,
+        {
+          method: "POST",
+
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to send rewards");
+        throw new Error(
+          data.message ||
+            "Failed to send rewards"
+        );
       }
 
-      setMessage(data.message || "Rewards sent successfully.");
-      setShowRewardsModal(false);
+      setMessage(
+        data.message ||
+          "Rewards sent successfully."
+      );
+
       await loadAttempts();
     } catch (error) {
-      console.error("Send rewards error:", error);
-      setError(error.message || "Failed to send rewards");
+      console.error(
+        "Send rewards error:",
+        error
+      );
+
+      setError(
+        error.message ||
+          "Failed to send rewards"
+      );
     } finally {
       setSendingRewards(false);
     }
@@ -1264,10 +1272,6 @@ function AdminQuizzes() {
                       <h3>
                         {quiz.title}
                       </h3>
-
-                      <td>
-                        {quiz.deadline ? new Date(quiz.deadline).toLocaleString() : "No Deadline"}
-                      </td>
 
                       <p>
                         {quiz.question_count ||
@@ -1485,7 +1489,7 @@ function AdminQuizzes() {
                     onClick={
                       handleSendRewards
                     }
-                    className="save-button"
+                    className="publish-button"
                     disabled={
                       sendingRewards
                     }
@@ -2114,14 +2118,12 @@ function AdminQuizzes() {
                     ) : (
 
                       <div
-                        className="premium-leaderboard-container"
                         style={{
                           overflowX: "auto",
                         }}
                       >
 
                         <table
-                          className="premium-leaderboard-table"
                           style={{
                             width: "100%",
                             borderCollapse:
@@ -2389,20 +2391,19 @@ function AdminQuizzes() {
                 <div>
 
                   <label>
-                    Deadline
+                    Time Limit
                   </label>
 
                   <input
-                    type="datetime-local"
+                    type="number"
+                    min="1"
                     value={
-                      quizForm.deadline
-                        ? new Date(new Date(quizForm.deadline).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
-                        : ""
+                      quizForm.time_limit
                     }
                     onChange={(e) =>
                       setQuizForm({
                         ...quizForm,
-                        deadline:
+                        time_limit:
                           e.target.value,
                       })
                     }
@@ -2442,98 +2443,6 @@ function AdminQuizzes() {
 
         </div>
 
-      )}
-
-      {/* ==========================================
-          REWARDS CONFIG MODAL
-      ========================================== */}
-      {showRewardsModal && (
-        <div className="admin-modal-overlay">
-          <div className="admin-modal" style={{padding: '30px', maxWidth: '600px', width: '100%'}}>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
-              <h2 style={{margin: 0, color: '#123d2a'}}>Configure Reward Fields</h2>
-              <button type="button" onClick={() => setShowRewardsModal(false)} style={{background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#777'}}>×</button>
-            </div>
-
-            <div style={{marginBottom: '25px', padding: '15px', background: '#f4f7f5', borderRadius: '8px', border: '1px solid #e0e8e4'}}>
-              <label style={{display: 'block', fontWeight: 'bold', marginBottom: '8px', color: '#333'}}>Number of Winners to Reward:</label>
-              <input 
-                type="number" 
-                min="1" 
-                max="1000" 
-                value={winnersCount} 
-                onChange={(e) => setWinnersCount(Number(e.target.value))} 
-                style={{width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #ccc', fontSize: '15px'}} 
-              />
-              <p style={{margin: '5px 0 0', fontSize: '12px', color: '#666'}}>Specify how many top players should receive a reward claim message.</p>
-            </div>
-
-            <div style={{display: 'flex', gap: '8px', marginBottom: '15px'}}>
-              {["1", "2", "3", "others"].map(tab => (
-                 <button 
-                   key={tab} 
-                   type="button" 
-                   onClick={() => setActiveRankTab(tab)}
-                   style={{
-                     padding: '10px 12px', 
-                     background: activeRankTab === tab ? '#176b43' : '#e0e8e4', 
-                     color: activeRankTab === tab ? 'white' : '#333', 
-                     border: 'none', 
-                     borderRadius: '6px', 
-                     cursor: 'pointer', 
-                     flex: 1,
-                     fontWeight: 'bold'
-                   }}
-                 >
-                   {tab === "others" ? "Rank 4+" : `Rank ${tab}`}
-                 </button>
-              ))}
-            </div>
-            
-            <p style={{margin: '0 0 15px', color: '#555', fontSize: '13px'}}>Define the required fields for <strong>{activeRankTab === "others" ? "Rank 4 and below" : `Rank ${activeRankTab} (Champion)`}</strong>:</p>
-            
-            <div style={{maxHeight: '300px', overflowY: 'auto', paddingRight: '10px'}}>
-              {rankForms[activeRankTab].map((field, index) => (
-                <div key={index} style={{display: 'flex', gap: '10px', marginBottom: '10px'}}>
-                  <input
-                    type="text"
-                    value={field}
-                    onChange={(e) => {
-                      const newForms = { ...rankForms };
-                      newForms[activeRankTab][index] = e.target.value;
-                      setRankForms(newForms);
-                    }}
-                    placeholder="e.g. T-Shirt Size"
-                    style={{flex: 1, padding: '12px', border: '1px solid #ccc', borderRadius: '6px', fontSize: '14px'}}
-                  />
-                  <button type="button" onClick={() => {
-                      const newForms = { ...rankForms };
-                      newForms[activeRankTab] = newForms[activeRankTab].filter((_, i) => i !== index);
-                      setRankForms(newForms);
-                  }} style={{background: '#f8d7da', color: '#721c24', border: 'none', borderRadius: '6px', padding: '0 15px', cursor: 'pointer', fontWeight: 'bold'}}>
-                    Delete
-                  </button>
-                </div>
-              ))}
-            </div>
-            <button type="button" onClick={() => {
-                const newForms = { ...rankForms };
-                newForms[activeRankTab].push("");
-                setRankForms(newForms);
-            }} style={{background: '#e8f5e9', color: '#2e7d32', border: '1px dashed #4caf50', borderRadius: '6px', padding: '12px 15px', cursor: 'pointer', width: '100%', marginTop: '10px', fontWeight: 'bold'}}>
-              + Add Another Field
-            </button>
-
-            <div className="admin-modal-actions" style={{marginTop: '30px', display: 'flex', justifyContent: 'flex-end', gap: '15px'}}>
-              <button type="button" className="cancel-button" onClick={() => setShowRewardsModal(false)} style={{padding: '10px 20px'}}>
-                Cancel
-              </button>
-              <button type="button" className="save-button" onClick={submitSendRewards} disabled={sendingRewards} style={{padding: '10px 20px'}}>
-                {sendingRewards ? "Sending..." : `Send to Top ${winnersCount}`}
-              </button>
-            </div>
-          </div>
-        </div>
       )}
 
     </div>

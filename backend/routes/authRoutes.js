@@ -5,6 +5,8 @@ import {
   login,
   verifyEmail,
   getCurrentUser,
+  forgotPassword,
+  resetPassword,
 } from "../controllers/authController.js";
 
 import { authenticate } from "../middleware/authMiddleware.js";
@@ -40,6 +42,20 @@ router.get(
 router.get(
   "/verify-email/:token",
   verifyEmail
+);
+
+// ======================================================
+// PASSWORD RESET
+// ======================================================
+
+router.post(
+  "/forgot-password",
+  forgotPassword
+);
+
+router.post(
+  "/reset-password/:token",
+  resetPassword
 );
 
 export default router;
