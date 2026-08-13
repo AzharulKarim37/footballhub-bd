@@ -1485,7 +1485,7 @@ function AdminQuizzes() {
                     onClick={
                       handleSendRewards
                     }
-                    className="publish-button"
+                    className="save-button"
                     disabled={
                       sendingRewards
                     }
@@ -2114,12 +2114,14 @@ function AdminQuizzes() {
                     ) : (
 
                       <div
+                        className="premium-leaderboard-container"
                         style={{
                           overflowX: "auto",
                         }}
                       >
 
                         <table
+                          className="premium-leaderboard-table"
                           style={{
                             width: "100%",
                             borderCollapse:
