@@ -1,5 +1,6 @@
+import { Trophy, Calendar, Clock, MapPin, Shield, Activity } from "lucide-react";
+import { getTeamLogo, getTeamInitials } from "../../utils/teamLogos";
 import "./MatchModal.css";
-import { Trophy, Calendar, Clock, MapPin, Shield } from "lucide-react";
 
 function MatchModal({ match, onClose }) {
   if (!match) return null;
@@ -10,6 +11,11 @@ function MatchModal({ match, onClose }) {
   const stage = match.stage || "Regular Season";
   const leagueName = match.league || "Competition";
 
+  const homeLogo = getTeamLogo(match.home);
+  const awayLogo = getTeamLogo(match.away);
+
+  const isLive = match.status === "LIVE";
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="match-modal" onClick={(e) => e.stopPropagation()}>
@@ -17,124 +23,171 @@ function MatchModal({ match, onClose }) {
           ✕
         </button>
 
-        {/* Header */}
+        {/* Header Matchup Banner */}
         <div className="modal-header">
-          <div className="modal-league">
+          <div className="modal-league-strip">
             <Trophy size={14} className="modal-trophy-icon" />
             <span>{leagueName}</span>
+            <span className="dot-sep">•</span>
+            <span>{stage}</span>
           </div>
 
-          <div className="modal-teams-head">
-            <div className="modal-team home">
-              <h3>{match.home}</h3>
+          <div className="modal-teams-arena">
+            {/* Home Team */}
+            <div className="modal-team-block home-side">
+              <div className="modal-crest-wrapper">
+                {homeLogo ? (
+                  <img src={homeLogo} alt={match.home} className="modal-crest-img" />
+                ) : (
+                  <span className="modal-crest-initials">{getTeamInitials(match.home)}</span>
+                )}
+              </div>
+              <h3 className="modal-team-name">{match.home}</h3>
             </div>
-            <div className="modal-score-head">
-              <h2>
-                {homeScore} <span className="colon">:</span> {awayScore}
-              </h2>
-            </div>
-            <div className="modal-team away">
-              <h3>{match.away}</h3>
-            </div>
-          </div>
 
-          <div className="modal-status-badge">
-            <span className={`status-pill ${match.status?.toLowerCase()}`}>
-              {match.status === "LIVE" ? `🔴 LIVE ${match.minute || "In Play"}` : match.status}
-            </span>
+            {/* Score Center */}
+            <div className="modal-score-block">
+              <div className="modal-score-box">
+                <span className="modal-score-num">{homeScore}</span>
+                <span className="modal-score-sep">:</span>
+                <span className="modal-score-num">{awayScore}</span>
+              </div>
+              <div className="modal-status-tag">
+                <span className={`modal-status-pill ${match.status?.toLowerCase()}`}>
+                  {isLive ? `🔴 LIVE ${match.minute || "In Play"}` : match.status}
+                </span>
+              </div>
+            </div>
+
+            {/* Away Team */}
+            <div className="modal-team-block away-side">
+              <div className="modal-crest-wrapper away-crest">
+                {awayLogo ? (
+                  <img src={awayLogo} alt={match.away} className="modal-crest-img" />
+                ) : (
+                  <span className="modal-crest-initials">{getTeamInitials(match.away)}</span>
+                )}
+              </div>
+              <h3 className="modal-team-name">{match.away}</h3>
+            </div>
           </div>
         </div>
 
-        {/* Info Grid */}
-        <div className="modal-info">
-          <div>
+        {/* Matchday Meta Grid */}
+        <div className="modal-info-grid">
+          <div className="info-cell">
             <h4><Calendar size={13} /> Date</h4>
             <p>{match.date || "TBD"}</p>
           </div>
-          <div>
+          <div className="info-cell">
             <h4><Clock size={13} /> Kick Off</h4>
             <p>{match.time || "TBD"}</p>
           </div>
-          <div>
+          <div className="info-cell">
             <h4><Shield size={13} /> Stage</h4>
             <p>{stage}</p>
           </div>
-          <div>
+          <div className="info-cell">
             <h4><MapPin size={13} /> Venue</h4>
             <p>{venue}</p>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="statistics">
-          <h3>Match Statistics</h3>
-
-          <div className="stat-row">
-            <div className="stat-labels">
-              <span>Possession</span>
-              <strong>62% - 38%</strong>
-            </div>
-            <div className="stat-bar-track">
-              <div className="stat-bar-fill" style={{ width: "62%" }}></div>
-            </div>
+        {/* Head to Head & Match Statistics */}
+        <div className="modal-stats-section">
+          <div className="section-title-strip">
+            <Activity size={16} className="stat-heading-icon" />
+            <h3>Match Statistics &amp; Control</h3>
           </div>
 
-          <div className="stat-row">
-            <div className="stat-labels">
-              <span>Shots (Target)</span>
-              <strong>18 (8) - 9 (3)</strong>
+          <div className="stat-comparison-list">
+            <div className="stat-row">
+              <div className="stat-row-labels">
+                <span>62%</span>
+                <span className="stat-name">Possession</span>
+                <span>38%</span>
+              </div>
+              <div className="stat-dual-bar">
+                <div className="dual-fill-left" style={{ width: "62%" }}></div>
+                <div className="dual-fill-right" style={{ width: "38%" }}></div>
+              </div>
             </div>
-            <div className="stat-bar-track">
-              <div className="stat-bar-fill" style={{ width: "67%" }}></div>
-            </div>
-          </div>
 
-          <div className="stat-row">
-            <div className="stat-labels">
-              <span>Corners</span>
-              <strong>7 - 2</strong>
+            <div className="stat-row">
+              <div className="stat-row-labels">
+                <span>18 (8)</span>
+                <span className="stat-name">Total Shots (On Target)</span>
+                <span>9 (3)</span>
+              </div>
+              <div className="stat-dual-bar">
+                <div className="dual-fill-left" style={{ width: "67%" }}></div>
+                <div className="dual-fill-right" style={{ width: "33%" }}></div>
+              </div>
             </div>
-            <div className="stat-bar-track">
-              <div className="stat-bar-fill" style={{ width: "78%" }}></div>
-            </div>
-          </div>
 
-          <div className="stat-row">
-            <div className="stat-labels">
-              <span>Yellow Cards</span>
-              <strong>2 - 4</strong>
+            <div className="stat-row">
+              <div className="stat-row-labels">
+                <span>7</span>
+                <span className="stat-name">Corner Kicks</span>
+                <span>2</span>
+              </div>
+              <div className="stat-dual-bar">
+                <div className="dual-fill-left" style={{ width: "78%" }}></div>
+                <div className="dual-fill-right" style={{ width: "22%" }}></div>
+              </div>
             </div>
-            <div className="stat-bar-track">
-              <div className="stat-bar-fill" style={{ width: "35%" }}></div>
+
+            <div className="stat-row">
+              <div className="stat-row-labels">
+                <span>2</span>
+                <span className="stat-name">Yellow Cards</span>
+                <span>4</span>
+              </div>
+              <div className="stat-dual-bar">
+                <div className="dual-fill-left yellow-card-bar" style={{ width: "33%" }}></div>
+                <div className="dual-fill-right yellow-card-bar" style={{ width: "67%" }}></div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Timeline */}
-        <div className="timeline">
+        {/* Live Matchday Timeline */}
+        <div className="modal-timeline-section">
           <h3>Matchday Timeline</h3>
-          <ul className="timeline-list">
-            <li>
-              <span className="timeline-min">18'</span>
-              <span className="timeline-desc">⚽ Goal scored by Home Team</span>
+          <ul className="timeline-events-list">
+            <li className="timeline-event">
+              <span className="event-minute">18'</span>
+              <div className="event-details">
+                <span className="event-icon">⚽</span>
+                <span>Goal scored for <strong>{match.home}</strong></span>
+              </div>
             </li>
-            <li>
-              <span className="timeline-min">32'</span>
-              <span className="timeline-desc">🟨 Yellow Card issued</span>
+            <li className="timeline-event">
+              <span className="event-minute">32'</span>
+              <div className="event-details">
+                <span className="event-icon">🟨</span>
+                <span>Yellow Card issued (Tactical Foul)</span>
+              </div>
             </li>
-            <li>
-              <span className="timeline-min">44'</span>
-              <span className="timeline-desc">⚽ Goal scored by Away Team</span>
+            <li className="timeline-event">
+              <span className="event-minute">44'</span>
+              <div className="event-details">
+                <span className="event-icon">⚽</span>
+                <span>Equalizer scored for <strong>{match.away}</strong></span>
+              </div>
             </li>
-            <li className="timeline-break">
-              <span>HT • Half Time</span>
+            <li className="timeline-divider-item">
+              <span>HT • Half Time Interval</span>
             </li>
-            <li>
-              <span className="timeline-min">73'</span>
-              <span className="timeline-desc">⚽ Winning Goal scored</span>
+            <li className="timeline-event">
+              <span className="event-minute">73'</span>
+              <div className="event-details">
+                <span className="event-icon">⚽</span>
+                <span>Decisive Goal scored</span>
+              </div>
             </li>
-            <li className="timeline-break">
-              <span>90+4' • Full Time</span>
+            <li className="timeline-divider-item">
+              <span>{isLive ? `CURRENT: ${match.minute || "In Progress"}` : "Full Time Whistle"}</span>
             </li>
           </ul>
         </div>

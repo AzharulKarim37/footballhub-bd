@@ -1,4 +1,5 @@
-import { Trophy, MapPin, Calendar, Clock, ChevronRight } from "lucide-react";
+import { Trophy, MapPin, Calendar, Clock, ChevronRight, Activity } from "lucide-react";
+import { getTeamLogo, getTeamInitials } from "../../utils/teamLogos";
 import "./MatchCard.css";
 
 function MatchCard({ match, onClick }) {
@@ -8,100 +9,138 @@ function MatchCard({ match, onClick }) {
   const stage = match.stage || "Regular Season";
   const leagueName = match.league || "Competition";
 
-  const getBadge = () => {
+  const homeLogo = getTeamLogo(match.home);
+  const awayLogo = getTeamLogo(match.away);
+
+  const getStatusBadge = () => {
     switch (match.status) {
       case "LIVE":
         return (
-          <span className="match-status-badge live-pulse">
-            <span className="live-radar-dot" /> LIVE {match.minute || "1st Half"}
-          </span>
+          <div className="card-badge badge-live">
+            <span className="live-pulse-dot" />
+            <span className="live-badge-text">LIVE {match.minute || "1st Half"}</span>
+          </div>
         );
       case "TODAY":
-        return <span className="match-status-badge today">TODAY</span>;
+        return (
+          <div className="card-badge badge-today">
+            <span className="badge-dot dot-today" />
+            <span>TODAY</span>
+          </div>
+        );
       case "UPCOMING":
-        return <span className="match-status-badge upcoming">UPCOMING</span>;
+        return (
+          <div className="card-badge badge-upcoming">
+            <span className="badge-dot dot-upcoming" />
+            <span>UPCOMING</span>
+          </div>
+        );
       default:
-        return <span className="match-status-badge ft">FULL TIME</span>;
+        return (
+          <div className="card-badge badge-ft">
+            <span>FULL TIME</span>
+          </div>
+        );
     }
   };
 
   const isLiveOrFinished = match.status === "LIVE" || match.status === "FT";
-
-  const getInitial = (name) => {
-    if (!name) return "⚽";
-    const words = name.trim().split(" ");
-    if (words.length > 1) {
-      return (words[0][0] + words[1][0]).toUpperCase();
-    }
-    return name.slice(0, 2).toUpperCase();
-  };
+  const isLive = match.status === "LIVE";
+  const homeWinner = isLiveOrFinished && homeScore > awayScore;
+  const awayWinner = isLiveOrFinished && awayScore > homeScore;
 
   return (
-    <div className="match-card" onClick={() => onClick(match)}>
-      {/* Top Header */}
-      <div className="match-card-top">
-        <div className="match-league-info">
-          <Trophy size={13} className="match-league-icon" />
-          <span className="league-name">{leagueName}</span>
+    <div
+      className={`match-broadcast-card ${isLive ? "card-is-live" : ""}`}
+      onClick={() => onClick(match)}
+    >
+      {/* Top Header Strip */}
+      <div className="broadcast-card-top">
+        <div className="broadcast-league-tag">
+          <Trophy size={13} className="broadcast-league-icon" />
+          <span className="league-title-text">{leagueName}</span>
         </div>
-        {getBadge()}
+        {getStatusBadge()}
       </div>
 
-      {/* Main Scoreboard Area */}
-      <div className="match-scoreboard">
+      {/* Main Broadcast Matchup Arena */}
+      <div className="broadcast-matchup">
         {/* Home Team */}
-        <div className="team-cell home-cell">
-          <div className="team-crest-badge">
-            {getInitial(match.home)}
+        <div className={`broadcast-team-cell home-side ${homeWinner ? "team-winner" : ""}`}>
+          <div className="team-crest-container">
+            {homeLogo ? (
+              <img src={homeLogo} alt={match.home} className="team-crest-img" />
+            ) : (
+              <span className="team-crest-initials">{getTeamInitials(match.home)}</span>
+            )}
           </div>
-          <h4 className="team-name">{match.home}</h4>
+          <span className="team-title-text" title={match.home}>
+            {match.home}
+          </span>
         </div>
 
-        {/* Center Score / Time */}
-        <div className="score-center-cell">
+        {/* Center Scoreboard / Time Hub */}
+        <div className="broadcast-score-hub">
           {isLiveOrFinished ? (
-            <div className="score-display">
-              <span className="score-number">{homeScore}</span>
-              <span className="score-colon">-</span>
-              <span className="score-number">{awayScore}</span>
+            <div className="scoreboard-pill">
+              <span className={`score-digit ${homeWinner ? "digit-winner" : ""}`}>
+                {homeScore}
+              </span>
+              <span className="score-separator">:</span>
+              <span className={`score-digit ${awayWinner ? "digit-winner" : ""}`}>
+                {awayScore}
+              </span>
             </div>
           ) : (
-            <div className="time-display">
-              <span className="vs-label">VS</span>
-              <span className="kickoff-time">
-                <Clock size={12} /> {match.time || "TBD"}
+            <div className="kickoff-pill">
+              <span className="vs-tag">VS</span>
+              <span className="kickoff-time-tag">
+                <Clock size={11} /> {match.time || "TBD"}
               </span>
             </div>
           )}
 
-          {match.date && (
-            <span className="match-date-tag">
+          {isLive && (
+            <div className="live-action-ticker">
+              <Activity size={12} className="ticker-icon" />
+              <span>In Play</span>
+            </div>
+          )}
+
+          {match.date && !isLive && (
+            <span className="fixture-date-tag">
               <Calendar size={11} /> {match.date}
             </span>
           )}
         </div>
 
         {/* Away Team */}
-        <div className="team-cell away-cell">
-          <div className="team-crest-badge away-badge">
-            {getInitial(match.away)}
+        <div className={`broadcast-team-cell away-side ${awayWinner ? "team-winner" : ""}`}>
+          <div className="team-crest-container away-crest">
+            {awayLogo ? (
+              <img src={awayLogo} alt={match.away} className="team-crest-img" />
+            ) : (
+              <span className="team-crest-initials">{getTeamInitials(match.away)}</span>
+            )}
           </div>
-          <h4 className="team-name">{match.away}</h4>
+          <span className="team-title-text" title={match.away}>
+            {match.away}
+          </span>
         </div>
       </div>
 
-      {/* Footer Info */}
-      <div className="match-card-footer">
-        <div className="match-meta-chips">
-          <span className="meta-chip">{stage}</span>
-          <span className="meta-chip">
+      {/* Card Footer Metadata */}
+      <div className="broadcast-card-footer">
+        <div className="broadcast-meta-tags">
+          <span className="meta-tag">{stage}</span>
+          <span className="meta-tag venue-tag">
             <MapPin size={11} /> {venue}
           </span>
         </div>
 
-        <div className="match-view-details">
-          <span>Match Details</span>
-          <ChevronRight size={14} />
+        <div className="details-action-prompt">
+          <span>Stats &amp; Timeline</span>
+          <ChevronRight size={14} className="prompt-arrow" />
         </div>
       </div>
     </div>
