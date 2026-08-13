@@ -10,7 +10,7 @@ import { authenticate, requireAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Public routes
+// Public routes 
 router.get("/", getNews);
 
 // Admin-only routes (protected by token verification + admin check)

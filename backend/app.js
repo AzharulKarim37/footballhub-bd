@@ -12,6 +12,7 @@ import matchRoutes from "./routes/matchRoutes.js";
 import teamRoutes from "./routes/teamRoutes.js";
 import playerRoutes from "./routes/playerRoutes.js";
 import newsRoutes from "./routes/newsRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
 
 dotenv.config();
 
@@ -24,11 +25,12 @@ const app = express();
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like Postman, curl, or server-to-server)
+      // Allow requests with no origin (Postman, curl, server-to-server)
       if (!origin) return callback(null, true);
 
-      // Allow any localhost or 127.0.0.1 port during development
-      const isLocalDev = /^https?:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
+      // Allow localhost and 127.0.0.1 on any port during development
+      const isLocalDev =
+        /^https?:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
 
       if (isLocalDev) {
         callback(null, true);
@@ -70,7 +72,12 @@ app.use("/api/leagues", leagueRoutes);
 app.use("/api/matches", matchRoutes);
 app.use("/api/teams", teamRoutes);
 app.use("/api/players", playerRoutes);
+
+// Your News Page
 app.use("/api/news", newsRoutes);
+
+// Partner's Message System
+app.use("/api/messages", messageRoutes);
 
 // ======================================================
 // HOME

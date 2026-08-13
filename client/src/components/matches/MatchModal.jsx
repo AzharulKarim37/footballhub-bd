@@ -4,6 +4,17 @@ function MatchModal({ match, onClose }) {
 
   if (!match) return null;
 
+  let stats = match.stats || {};
+  if (typeof stats === 'string') {
+    try { stats = JSON.parse(stats); } catch(e) {}
+  }
+  let timeline = match.timeline || [];
+  if (typeof timeline === 'string') {
+    try { timeline = JSON.parse(timeline); } catch(e) {}
+  }
+
+  const isUpcoming = match.status === 'UPCOMING';
+
   return (
 
     <div className="modal-overlay" onClick={onClose}>
@@ -90,103 +101,75 @@ function MatchModal({ match, onClose }) {
 
         </div>
 
-        <div className="statistics">
+        {!isUpcoming && (
+          <>
+            <div className="statistics">
+              <h3>Match Statistics</h3>
 
-          <h3>Match Statistics</h3>
+              <div className="stat">
+                <span>Possession</span>
+                <span>{stats.possession_home ?? 50}% - {stats.possession_away ?? 50}%</span>
+              </div>
+              <div className="bar">
+                <div style={{ width: `${stats.possession_home ?? 50}%` }}></div>
+              </div>
 
-          <div className="stat">
+              <div className="stat">
+                <span>Shots</span>
+                <span>{stats.shots_home ?? 0} - {stats.shots_away ?? 0}</span>
+              </div>
+              <div className="bar">
+                <div style={{ width: `${((stats.shots_home ?? 0) / Math.max(((stats.shots_home ?? 0) + (stats.shots_away ?? 0)), 1)) * 100}%` }}></div>
+              </div>
 
-            <span>Possession</span>
+              <div className="stat">
+                <span>Shots on Target</span>
+                <span>{stats.shots_on_target_home ?? 0} - {stats.shots_on_target_away ?? 0}</span>
+              </div>
+              <div className="bar">
+                <div style={{ width: `${((stats.shots_on_target_home ?? 0) / Math.max(((stats.shots_on_target_home ?? 0) + (stats.shots_on_target_away ?? 0)), 1)) * 100}%` }}></div>
+              </div>
 
-            <span>62% - 38%</span>
+              <div className="stat">
+                <span>Corners</span>
+                <span>{stats.corners_home ?? 0} - {stats.corners_away ?? 0}</span>
+              </div>
+              <div className="bar">
+                <div style={{ width: `${((stats.corners_home ?? 0) / Math.max(((stats.corners_home ?? 0) + (stats.corners_away ?? 0)), 1)) * 100}%` }}></div>
+              </div>
 
-          </div>
+              <div className="stat">
+                <span>Yellow Cards</span>
+                <span>{stats.yellows_home ?? 0} - {stats.yellows_away ?? 0}</span>
+              </div>
+              <div className="bar">
+                <div style={{ width: `${((stats.yellows_home ?? 0) / Math.max(((stats.yellows_home ?? 0) + (stats.yellows_away ?? 0)), 1)) * 100}%` }}></div>
+              </div>
+            </div>
 
-          <div className="bar">
-
-            <div style={{ width: "62%" }}></div>
-
-          </div>
-
-          <div className="stat">
-
-            <span>Shots</span>
-
-            <span>18 - 9</span>
-
-          </div>
-
-          <div className="bar">
-
-            <div style={{ width: "67%" }}></div>
-
-          </div>
-
-          <div className="stat">
-
-            <span>Shots on Target</span>
-
-            <span>8 - 3</span>
-
-          </div>
-
-          <div className="bar">
-
-            <div style={{ width: "72%" }}></div>
-
-          </div>
-
-          <div className="stat">
-
-            <span>Corners</span>
-
-            <span>7 - 2</span>
-
-          </div>
-
-          <div className="bar">
-
-            <div style={{ width: "78%" }}></div>
-
-          </div>
-
-          <div className="stat">
-
-            <span>Yellow Cards</span>
-
-            <span>2 - 4</span>
-
-          </div>
-
-          <div className="bar">
-
-            <div style={{ width: "35%" }}></div>
-
-          </div>
-
-        </div>
-
-        <div className="timeline">
-
-          <h3>Timeline</h3>
-
-          <ul>
-
-            <li>18' ⚽ Goal</li>
-
-            <li>32' 🟨 Yellow Card</li>
-
-            <li>44' ⚽ Goal</li>
-
-            <li>HT</li>
-
-            <li>73' ⚽ Goal</li>
-
-            <li>90+4' Full Time</li>
-
-          </ul>
-
-        </div>
+            <div className="timeline">
+              <h3>Timeline</h3>
+              {timeline.length > 0 ? (
+                <ul>
+                  {timeline.map((event, index) => {
+                    let icon = "⚽";
+                    if (event.type === "Yellow Card") icon = "🟨";
+                    if (event.type === "Red Card") icon = "🟥";
+                    if (event.type === "Substitution") icon = "🔄";
+                    
+                    return (
+                      <li key={index}>
+                        {event.minute} {icon} {event.player}
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p style={{textAlign: 'center', color: '#666', marginTop: '10px'}}>No timeline events recorded yet.</p>
+              )}
+            </div>
+          </>
+        )}
 
       </div>
 
