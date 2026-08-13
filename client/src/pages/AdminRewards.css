@@ -1,0 +1,129 @@
+.reward-table-container {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+.reward-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.reward-table th {
+  background: #f8faf9;
+  padding: 15px;
+  text-align: left;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #558b6e;
+  border-bottom: 2px solid #e0e8e4;
+  letter-spacing: 0.5px;
+}
+
+.reward-table td {
+  padding: 18px 15px;
+  border-bottom: 1px solid #e0e8e4;
+  vertical-align: middle;
+}
+
+.reward-table tr:hover td {
+  background-color: #fcfdfc;
+}
+
+.user-cell strong {
+  color: #123d2a;
+  font-size: 15px;
+}
+
+.user-cell span {
+  color: #777;
+  font-size: 12px;
+}
+
+.quiz-cell {
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.reward-status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+.reward-status-badge.active {
+  background: #e8f5e9;
+  color: #2bc278;
+  border: 1px solid #c8e6c9;
+}
+
+.reward-status-badge.pending {
+  background: #fff8e1;
+  color: #fbc02d;
+  border: 1px solid #ffecb3;
+}
+
+.claim-details-box {
+  background: #f8faf9;
+  border: 1px solid #e0e8e4;
+  border-radius: 6px;
+  padding: 10px;
+  min-width: 250px;
+}
+
+.detail-row {
+  margin-bottom: 6px;
+  font-size: 13px;
+  display: flex;
+}
+
+.detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #558b6e;
+  width: 130px;
+  flex-shrink: 0;
+}
+
+.detail-value {
+  color: #333;
+}
+
+.no-details {
+  color: #aaa;
+  font-style: italic;
+}
+
+.date-cell {
+  color: #666;
+  font-size: 13px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+.empty-state p {
+  color: #558b6e;
+  font-size: 16px;
+  font-weight: 500;
+}
