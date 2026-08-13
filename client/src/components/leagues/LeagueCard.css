@@ -1,0 +1,163 @@
+.league-card{
+
+    background:linear-gradient(145deg,#102417,#173321);
+
+    border-radius:24px;
+
+    padding:35px;
+
+    transition:.4s;
+
+    border:1px solid rgba(255,255,255,.06);
+
+    text-align:center;
+
+    overflow:hidden;
+
+}
+
+.league-card:hover{
+
+    transform:translateY(-10px);
+
+    border-color:#C8FF2E;
+
+    box-shadow:0 25px 50px rgba(0,0,0,.45);
+
+}
+
+.league-logo-wrapper{
+
+    width:120px;
+
+    height:120px;
+
+    margin:auto;
+
+    margin-bottom:25px;
+
+    border-radius:50%;
+
+    background:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    transition:.35s;
+
+}
+
+.league-card:hover .league-logo-wrapper{
+
+    transform:scale(1.08);
+
+}
+
+.league-logo{
+
+    width:75px;
+
+    height:75px;
+
+    object-fit:contain;
+
+}
+
+.league-card h2{
+
+    color:white;
+
+    margin-bottom:15px;
+
+}
+
+.league-description{
+
+    color:#bdbdbd;
+
+    line-height:1.7;
+
+    margin-bottom:30px;
+
+    min-height:55px;
+
+}
+
+.league-info{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:18px;
+
+    margin-bottom:30px;
+
+}
+
+.league-info div{
+
+    background:#0b1b13;
+
+    padding:18px;
+
+    border-radius:15px;
+
+}
+
+.league-info span{
+
+    display:block;
+
+    color:#8d8d8d;
+
+    font-size:13px;
+
+    margin-bottom:8px;
+
+}
+
+.league-info strong{
+
+    color:white;
+
+}
+
+.league-btn{
+
+    display:block;
+
+    width:100%;
+
+    text-align:center;
+
+    margin-top:30px;
+
+    background:#c8ff2e;
+
+    color:black;
+
+    padding:16px;
+
+    border-radius:40px;
+
+    text-decoration:none;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    transition:.3s;
+
+}
+
+.league-btn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 12px 25px rgba(200,255,46,.35);
+
+}

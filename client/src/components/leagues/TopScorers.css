@@ -1,0 +1,99 @@
+.top-scorers{
+
+    margin-top:70px;
+
+}
+
+.scorer-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+.scorer-card{
+
+    background:#102417;
+
+    border:1px solid #1d3d2a;
+
+    border-radius:18px;
+
+    padding:22px 28px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    transition:.3s;
+
+}
+
+.scorer-card:hover{
+
+    border-color:#C8FF2E;
+
+    transform:translateY(-4px);
+
+}
+
+.rank{
+
+    width:55px;
+
+    height:55px;
+
+    background:#C8FF2E;
+
+    color:black;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-weight:bold;
+
+    font-size:18px;
+
+}
+
+.player-info{
+
+    flex:1;
+
+    margin-left:25px;
+
+}
+
+.player-info h3{
+
+    color:white;
+
+    margin-bottom:6px;
+
+}
+
+.player-info p{
+
+    color:#bdbdbd;
+
+}
+
+.goals{
+
+    color:#C8FF2E;
+
+    font-size:24px;
+
+    font-weight:bold;
+
+}

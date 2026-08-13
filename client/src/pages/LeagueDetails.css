@@ -1,0 +1,88 @@
+.league-details-page{
+
+    max-width:1400px;
+
+    margin:auto;
+
+    padding:40px 30px 80px;
+
+}
+
+/* ============================= */
+
+.league-dashboard{
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:30px;
+
+    margin-top:35px;
+
+    margin-bottom:35px;
+
+}
+
+.dashboard-left,
+.dashboard-right{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:25px;
+
+}
+
+/* ============================= */
+
+.section-title{
+
+    color:white;
+
+    font-size:28px;
+
+    font-weight:700;
+
+    margin-bottom:20px;
+
+}
+
+/* ============================= */
+
+.top-scorers,
+.recent-matches,
+.upcoming-fixtures{
+
+    background:#102417;
+
+    border:1px solid #1d3d2a;
+
+    border-radius:18px;
+
+    padding:28px;
+
+}
+
+/* ============================= */
+
+@media(max-width:1100px){
+
+.league-dashboard{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.league-details-page{
+
+padding:20px;
+
+}
+
+}
