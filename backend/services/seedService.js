@@ -137,6 +137,7 @@ export const initAndSeedDatabase = async () => {
         stadium VARCHAR(100),
         founded INT,
         logo VARCHAR(255),
+        trophies TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
@@ -153,6 +154,8 @@ export const initAndSeedDatabase = async () => {
         number INT DEFAULT 10,
         image VARCHAR(255),
         nationality VARCHAR(50) DEFAULT 'Bangladesh',
+        dob DATE DEFAULT NULL,
+        market_value VARCHAR(50) DEFAULT NULL,
         goals INT DEFAULT 0,
         assists INT DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

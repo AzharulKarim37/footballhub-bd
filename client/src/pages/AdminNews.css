@@ -1,0 +1,224 @@
+.news-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.news-list-table thead {
+    background: #123d2a;
+}
+
+.news-list-table th {
+    padding: 14px 18px;
+    text-align: left;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.news-list-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.news-list-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.news-list-table tbody tr:hover {
+    background: #f8faf9;
+}
+
+.news-title-cell {
+    font-weight: 600;
+    color: #123d2a;
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.news-summary-cell {
+    color: #666;
+    font-size: 13px;
+    max-width: 280px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.news-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.news-edit-btn,
+.news-delete-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.news-edit-btn {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.news-edit-btn:hover {
+    background: #1565c0;
+    color: white;
+}
+
+.news-delete-btn {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.news-delete-btn:hover {
+    background: #c62828;
+    color: white;
+}
+
+/* ================= MODAL ================= */
+.admin-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.admin-modal {
+    background: white;
+    border-radius: 14px;
+    max-width: 650px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.admin-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 28px;
+    border-bottom: 1px solid #eee;
+}
+
+.admin-modal-header h3 {
+    margin: 0;
+    color: #123d2a;
+    font-size: 20px;
+}
+
+.admin-modal-close {
+    background: #f5f5f5;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-modal-close:hover {
+    background: #eee;
+    color: #333;
+}
+
+.admin-modal-body {
+    padding: 24px 28px;
+}
+
+.admin-form-group {
+    margin-bottom: 18px;
+}
+
+.admin-form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+}
+
+.admin-form-group input,
+.admin-form-group select,
+.admin-form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.admin-form-group input:focus,
+.admin-form-group select:focus,
+.admin-form-group textarea:focus {
+    border-color: #123d2a;
+}
+
+.admin-form-group textarea {
+    resize: vertical;
+}
+
+.admin-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 18px 28px;
+    border-top: 1px solid #eee;
+}
+
+.admin-cancel-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: white;
+    color: #555;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.admin-cancel-btn:hover {
+    background: #f5f5f5;
+}
+
+.admin-save-btn {
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: none;
+    background: #123d2a;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.admin-save-btn:hover {
+    background: #0d2e1f;
+}

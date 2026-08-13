@@ -29,7 +29,7 @@ export const getAllTeams = async (req, res) => {
   }
 };
 
-// Get team by ID
+// Get team by ID, including squad and trophy history
 export const getTeamById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -37,7 +37,23 @@ export const getTeamById = async (req, res) => {
     if (teams.length === 0) {
       return res.status(404).json({ message: "Team not found" });
     }
-    res.json(teams[0]);
+
+    const team = teams[0];
+
+    // Squad: players whose club matches this team's name
+    const [players] = await db.query("SELECT * FROM players WHERE club = ?", [team.name]);
+
+    // Trophies stored as JSON text; parse safely
+    let trophies = [];
+    if (team.trophies) {
+      try {
+        trophies = JSON.parse(team.trophies);
+      } catch {
+        trophies = [];
+      }
+    }
+
+    res.json({ ...team, squad: players, trophies });
   } catch (error) {
     console.error("Error fetching team:", error);
     res.status(500).json({ message: "Server error fetching team" });

@@ -1,0 +1,533 @@
+/* =========================================================
+   TEAM DETAILS PAGE
+   ========================================================= */
+
+.team-details-page {
+    min-height: 100vh;
+    background: #07130d;
+    color: #ffffff;
+    padding: 28px 48px 80px;
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   BACK TO TEAMS
+   ========================================================= */
+
+.back-to-teams {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    color: #00ff87;
+    text-decoration: none;
+
+    font-size: 16px;
+    font-weight: 500;
+
+    margin: 0 0 18px 0;
+}
+
+.back-to-teams:hover {
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   TEAM HEADER
+   ========================================================= */
+
+.team-details-hero {
+    max-width: 1440px;
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+
+    gap: 42px;
+
+    padding: 0 0 42px;
+}
+
+
+/* LOGO BOX */
+
+.team-logo-box {
+    width: 256px;
+    height: 220px;
+
+    flex-shrink: 0;
+
+    background: #ffffff;
+
+    border-radius: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+.team-details-logo {
+    width: 185px;
+    height: 185px;
+
+    object-fit: contain;
+}
+
+
+/* TEAM INFORMATION */
+
+.team-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.team-info h1 {
+    margin: 0 0 14px;
+
+    color: #ffffff;
+
+    font-size: 46px;
+    line-height: 1.1;
+
+    font-weight: 700;
+}
+
+.team-league {
+    margin: 0 0 14px;
+
+    color: #aab4ae;
+
+    font-size: 20px;
+}
+
+.team-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    color: #ffffff;
+
+    font-size: 18px;
+}
+
+.meta-item strong {
+    color: #ffffff;
+}
+
+.meta-icon {
+    width: 22px;
+
+    color: #00ff87;
+
+    font-size: 20px;
+}
+
+
+/* =========================================================
+   COMMON SECTION
+   ========================================================= */
+
+.team-section {
+    max-width: 1440px;
+
+    margin: 0 auto 55px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    height: 35px;
+}
+
+.section-icon {
+    color: #00ff87;
+
+    font-size: 23px;
+}
+
+.section-heading h2 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.section-line {
+    width: 100%;
+    height: 2px;
+
+    margin-top: 8px;
+    margin-bottom: 22px;
+
+    background: #00d978;
+}
+
+.empty-message {
+    margin: 0;
+
+    color: #9aa69f;
+
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   SQUAD
+   ========================================================= */
+
+.squad-section {
+    margin-top: 0;
+}
+
+.squad-table-wrapper {
+    width: 100%;
+
+    overflow: hidden;
+
+    background: #07130d !important;
+
+    border: 1px solid #263a31;
+
+    border-radius: 16px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.squad-table {
+    width: 100%;
+
+    border-collapse: collapse;
+    border-spacing: 0;
+
+    background: #07130d !important;
+
+    table-layout: fixed;
+}
+
+
+/* =========================================================
+   TABLE HEADER
+   ========================================================= */
+
+.squad-table thead {
+    background: #0a1812 !important;
+}
+
+.squad-table thead tr {
+    background: #0a1812 !important;
+}
+
+.squad-table th {
+    height: 55px;
+
+    padding: 0 20px;
+
+    background: #0a1812 !important;
+
+    color: #b6d0c2 !important;
+
+    text-align: left;
+
+    border: none !important;
+    border-bottom: 1px solid #293c33 !important;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    letter-spacing: 0.4px;
+}
+
+
+/* COLUMN WIDTHS */
+
+.squad-table th:nth-child(1),
+.squad-table td:nth-child(1) {
+    width: 75px;
+}
+
+.squad-table th:nth-child(2),
+.squad-table td:nth-child(2) {
+    width: auto;
+}
+
+.squad-table th:nth-child(3),
+.squad-table td:nth-child(3) {
+    width: 28%;
+}
+
+
+/* =========================================================
+   TABLE BODY
+   ========================================================= */
+
+.squad-table tbody {
+    background: #07130d !important;
+}
+
+.squad-table tbody tr {
+    height: 83px;
+
+    background: #07130d !important;
+
+    transition: background 0.2s ease;
+}
+
+.squad-table tbody tr:hover {
+    background: #0b1d14 !important;
+}
+
+
+/* =========================================================
+   TABLE CELLS
+   ========================================================= */
+
+.squad-table td {
+    padding: 10px 20px;
+
+    background: #07130d !important;
+
+    color: #ffffff !important;
+
+    border: none !important;
+    border-bottom: 1px solid #1d3027 !important;
+
+    vertical-align: middle;
+}
+
+.squad-table tbody tr:hover td {
+    background: #0b1d14 !important;
+}
+
+.squad-table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+
+/* =========================================================
+   PLAYER NUMBER
+   ========================================================= */
+
+.number-column {
+    width: 75px;
+}
+
+.player-number {
+    width: 40px;
+    height: 40px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #0cae58;
+
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   PLAYER
+   ========================================================= */
+
+.player-info {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+}
+
+.player-avatar {
+    width: 56px;
+    height: 56px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    background: #15231c;
+
+    border: 1px solid #52635b;
+}
+
+.player-placeholder {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #00ff87;
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   PLAYER TEXT
+   ========================================================= */
+
+.player-text {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.player-name {
+    color: #00ff87 !important;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+.player-position {
+    color: #9da9a3 !important;
+
+    font-size: 16px;
+
+    line-height: 1.2;
+}
+
+
+/* =========================================================
+   NATIONALITY
+   ========================================================= */
+
+.nationality-column {
+    width: 28%;
+}
+
+.nationality {
+    color: #ffffff !important;
+
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.team-details-loading,
+.team-not-found {
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #07130d;
+
+    color: #ffffff;
+}
+
+.loading-text {
+    color: #00ff87;
+
+    font-size: 20px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .team-details-page {
+        padding: 25px;
+    }
+
+    .team-details-hero {
+        gap: 25px;
+    }
+
+    .team-logo-box {
+        width: 200px;
+        height: 190px;
+    }
+
+    .team-details-logo {
+        width: 150px;
+        height: 150px;
+    }
+
+    .team-info h1 {
+        font-size: 38px;
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .team-details-page {
+        padding: 20px 15px 50px;
+    }
+
+    .team-details-hero {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .team-logo-box {
+        width: 180px;
+        height: 180px;
+    }
+
+    .team-details-logo {
+        width: 140px;
+        height: 140px;
+    }
+
+    .team-info h1 {
+        font-size: 32px;
+    }
+
+    .team-league {
+        font-size: 17px;
+    }
+
+    .squad-table {
+        min-width: 650px;
+    }
+
+    .squad-table-wrapper {
+        overflow-x: auto;
+    }
+}
