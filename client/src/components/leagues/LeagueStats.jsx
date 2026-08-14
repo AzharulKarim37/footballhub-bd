@@ -19,10 +19,6 @@ function LeagueStats({ league }) {
         <p>Goals / Match</p>
       </div>
 
-      <div className="stat-card">
-        <h2>{league.yellow_cards ?? 0}</h2>
-        <p>Yellow Cards</p>
-      </div>
 
       <div className="stat-card">
         <h2>{league.red_cards ?? 0}</h2>

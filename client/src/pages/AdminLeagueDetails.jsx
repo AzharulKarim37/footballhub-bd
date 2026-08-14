@@ -36,7 +36,8 @@ function AdminLeagueDetails() {
   const [editingMatch, setEditingMatch] = useState(null);
   const [editingMatchStats, setEditingMatchStats] = useState(null);
 
-  const [standingForm, setStandingForm] = useState({ position: "", club: "", played: "", won: "", drawn: "", lost: "", gf: "", ga: "", gd: "", points: "", form: "W,W,D,W,W" });
+  const [standingForm, setStandingForm] = useState({ position: "", club: "", played: "", won: "", drawn: "", lost: "", gf: "", ga: "", gd: "", points: "", form: "W,W,D,W,W", group_name: "Group 1" });
+  const [activeGroup, setActiveGroup] = useState("Group 1");
   const [scorerForm, setScorerForm] = useState({ rank_no: "", player: "", club: "", goals: "" });
   const [statsForm, setStatsForm] = useState({});
   const [matchForm, setMatchForm] = useState({ home: "", away: "", homeScore: "", awayScore: "", minute: "", stadium: "", date: "", time: "", status: "UPCOMING", stage: "Regular Stage" });
@@ -75,10 +76,10 @@ function AdminLeagueDetails() {
   const openStandingModal = (standing = null) => {
     if (standing) {
       setEditingStanding(standing);
-      setStandingForm({ ...standing, form: Array.isArray(standing.form) ? standing.form.join(",") : standing.form });
+      setStandingForm({ ...standing, form: Array.isArray(standing.form) ? standing.form.join(",") : standing.form, group_name: standing.group_name || "Group 1" });
     } else {
       setEditingStanding(null);
-      setStandingForm({ position: "", club: "", played: "0", won: "0", drawn: "0", lost: "0", gf: "0", ga: "0", gd: "0", points: "0", form: "W,W,W,W,W" });
+      setStandingForm({ position: "", club: "", played: "0", won: "0", drawn: "0", lost: "0", gf: "0", ga: "0", gd: "0", points: "0", form: "W,W,W,W,W", group_name: activeGroup });
     }
     setShowStandingModal(true);
   };
@@ -313,10 +314,9 @@ function AdminLeagueDetails() {
           <h2>League Global Stats</h2>
           <button className="btn-add" onClick={openStatsModal}>Edit Stats</button>
         </div>
-        <div style={{display: 'flex', gap: '20px', flexWrap: 'wrap', color: 'white'}}>
+          <div style={{display: 'flex', gap: '20px', flexWrap: 'wrap', color: 'white'}}>
           <div style={{background: '#102417', padding: '15px', borderRadius: '8px', minWidth: '120px', border: '1px solid #1f3b2a'}}>Matches: <strong>{league.matches_played}</strong></div>
           <div style={{background: '#102417', padding: '15px', borderRadius: '8px', minWidth: '120px', border: '1px solid #1f3b2a'}}>Goals: <strong>{league.total_goals}</strong></div>
-          <div style={{background: '#102417', padding: '15px', borderRadius: '8px', minWidth: '120px', border: '1px solid #1f3b2a'}}>Yellows: <strong>{league.yellow_cards}</strong></div>
           <div style={{background: '#102417', padding: '15px', borderRadius: '8px', minWidth: '120px', border: '1px solid #1f3b2a'}}>Reds: <strong>{league.red_cards}</strong></div>
           <div style={{background: '#102417', padding: '15px', borderRadius: '8px', minWidth: '120px', border: '1px solid #1f3b2a'}}>Clean Sheets: <strong>{league.clean_sheets}</strong></div>
           <div style={{background: '#102417', padding: '15px', borderRadius: '8px', minWidth: '120px', border: '1px solid #1f3b2a'}}>Champion: <strong>{league.champion}</strong></div>
@@ -331,6 +331,29 @@ function AdminLeagueDetails() {
             <h2>League Standings</h2>
             <button className="btn-add" onClick={() => openStandingModal()}>+ Add Club</button>
           </div>
+
+          {/* GROUP TABS */}
+          <div style={{display:'flex', gap:'8px', marginBottom:'16px'}}>
+            {['Group 1','Group 2'].map(g => (
+              <button
+                key={g}
+                onClick={() => setActiveGroup(g)}
+                style={{
+                  padding: '6px 18px',
+                  borderRadius: '20px',
+                  border: '1px solid',
+                  cursor: 'pointer',
+                  fontWeight: '600',
+                  fontSize: '13px',
+                  transition: 'all 0.2s',
+                  background: activeGroup === g ? '#176b43' : 'transparent',
+                  color: activeGroup === g ? '#fff' : '#176b43',
+                  borderColor: '#176b43',
+                }}
+              >{g}</button>
+            ))}
+          </div>
+
           <table className="admin-list-table">
             <thead>
               <tr>
@@ -342,9 +365,9 @@ function AdminLeagueDetails() {
               </tr>
             </thead>
             <tbody>
-              {standings.map(s => (
+              {standings.filter(s => (s.group_name || 'Group 1') === activeGroup).map((s, i) => (
                 <tr key={s.id} className={getRowClass(s.position)}>
-                  <td><strong>{s.position}</strong></td>
+                  <td><strong>{i + 1}</strong></td>
                   <td>{s.club}</td>
                   <td>{s.played}</td>
                   <td><strong>{s.points}</strong></td>
@@ -354,7 +377,7 @@ function AdminLeagueDetails() {
                   </td>
                 </tr>
               ))}
-              {standings.length === 0 && <tr><td colSpan="5">No standings available.</td></tr>}
+              {standings.filter(s => (s.group_name || 'Group 1') === activeGroup).length === 0 && <tr><td colSpan="5">No standings for {activeGroup}.</td></tr>}
             </tbody>
           </table>
         </div>
@@ -439,13 +462,18 @@ function AdminLeagueDetails() {
         </table>
       </div>
 
-      {/* STANDING MODAL */}
       {showStandingModal && (
         <div className="modal-overlay">
           <div className="modal-content-large">
             <h2>{editingStanding ? "Edit Standing" : "Add Standing"}</h2>
             <form onSubmit={saveStanding}>
               <div className="form-grid-2">
+                <div className="form-group"><label>Group</label>
+                  <select value={standingForm.group_name} onChange={e => setStandingForm({...standingForm, group_name: e.target.value})} style={{width:'100%', padding:'8px', borderRadius:'6px', border:'1px solid #ccc'}}>
+                    <option value="Group 1">Group 1</option>
+                    <option value="Group 2">Group 2</option>
+                  </select>
+                </div>
                 <div className="form-group"><label>Position</label><input type="number" required value={standingForm.position} onChange={e => setStandingForm({...standingForm, position: e.target.value})} /></div>
                 <div className="form-group"><label>Club Name</label><input type="text" required value={standingForm.club} onChange={e => setStandingForm({...standingForm, club: e.target.value})} /></div>
                 <div className="form-group"><label>Played</label><input type="number" required value={standingForm.played} onChange={e => setStandingForm({...standingForm, played: e.target.value})} /></div>

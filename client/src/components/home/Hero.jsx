@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import "./Hero.css";
 import football from "../../assets/images/Football.png";
 
 function Hero() {
+  const navigate = useNavigate();
   return (
     <section className="hero">
 
@@ -23,7 +25,7 @@ function Hero() {
           fixtures, scores and everything football.
         </p>
 
-        <button className="hero-btn">
+        <button className="hero-btn" onClick={() => navigate('/news')}>
           Explore Latest News →
         </button>
 
