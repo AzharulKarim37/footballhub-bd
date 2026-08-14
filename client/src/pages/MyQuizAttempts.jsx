@@ -204,7 +204,7 @@ function MyQuizAttempts() {
                     )}
 
                     <Link
-                      to={`/attempt/${attempt.quiz_id}/${attempt.attempt_id}`}
+                      to={`/attempt/${attempt.quiz_id}/${attempt.id}`}
                       className="home-btn"
                       style={{ marginTop: '10px', display: 'block', background: '#0a1711', color: '#00ff87' }}
                     >
