@@ -4,14 +4,10 @@
 
 }
 
-.section-title{
-
-    color:white;
-
+.league-table-section .section-title {
+    color:#102417;
     font-size:34px;
-
     margin-bottom:25px;
-
 }
 
 .table-container{
@@ -236,3 +232,4 @@
 
 .ucl-ro16-bg { background: #00ff88; }
 .ucl-playoff-bg { background: #f39c12; }
+.ucl-eliminated-bg { background: #e74c3c; }

@@ -83,7 +83,8 @@ export const initAndSeedDatabase = async () => {
         ga INT DEFAULT 0,
         gd INT DEFAULT 0,
         points INT DEFAULT 0,
-        form VARCHAR(100) DEFAULT 'W,W,D,W,W'
+        form VARCHAR(100) DEFAULT 'W,W,D,W,W',
+        season VARCHAR(20) DEFAULT '2025-26'
       )
     `);
 
@@ -97,7 +98,8 @@ export const initAndSeedDatabase = async () => {
         rank_no INT NOT NULL,
         player VARCHAR(100) NOT NULL,
         club VARCHAR(100) NOT NULL,
-        goals INT DEFAULT 0
+        goals INT DEFAULT 0,
+        season VARCHAR(20) DEFAULT '2025-26'
       )
     `);
 
@@ -137,6 +139,7 @@ export const initAndSeedDatabase = async () => {
         stadium VARCHAR(100),
         founded INT,
         logo VARCHAR(255),
+        trophies TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
@@ -153,6 +156,8 @@ export const initAndSeedDatabase = async () => {
         number INT DEFAULT 10,
         image VARCHAR(255),
         nationality VARCHAR(50) DEFAULT 'Bangladesh',
+        dob DATE DEFAULT NULL,
+        market_value VARCHAR(50) DEFAULT NULL,
         goals INT DEFAULT 0,
         assists INT DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -168,6 +173,7 @@ export const initAndSeedDatabase = async () => {
         title VARCHAR(255) NOT NULL,
         description TEXT,
         difficulty VARCHAR(50) DEFAULT 'Medium',
+        deadline DATETIME DEFAULT NULL,
         time_limit INT DEFAULT 10,
         category VARCHAR(100) DEFAULT 'Football',
         status ENUM('draft', 'published', 'stopped') DEFAULT 'draft',
@@ -239,6 +245,25 @@ export const initAndSeedDatabase = async () => {
         FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE SET NULL
       )
     `);
+
+    // ======================================================
+    // DYNAMIC COLUMN MIGRATIONS (For existing tables)
+    // ======================================================
+    const addColumnIfNotExist = async (tableName, columnName, columnDefinition) => {
+      const [cols] = await db.query(`SHOW COLUMNS FROM \`${tableName}\` LIKE ?`, [columnName]);
+      if (cols.length === 0) {
+        console.log(`🔧 Adding column ${columnName} to ${tableName}...`);
+        await db.query(`ALTER TABLE \`${tableName}\` ADD COLUMN ${columnDefinition}`);
+        console.log(`✅ Added column ${columnName} to ${tableName}`);
+      }
+    };
+
+    await addColumnIfNotExist("quizzes", "deadline", "deadline DATETIME DEFAULT NULL AFTER difficulty");
+    await addColumnIfNotExist("league_standings", "season", "season VARCHAR(20) DEFAULT '2025-26'");
+    await addColumnIfNotExist("top_scorers", "season", "season VARCHAR(20) DEFAULT '2025-26'");
+    await addColumnIfNotExist("matches", "stats", "stats JSON DEFAULT NULL");
+    await addColumnIfNotExist("matches", "timeline", "timeline JSON DEFAULT NULL");
+    await addColumnIfNotExist("quiz_attempts", "user_answers_json", "user_answers_json JSON DEFAULT NULL");
 
     // ======================================================
     // SEED DATA — only if tables are empty

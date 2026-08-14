@@ -10,6 +10,8 @@ import LeagueTable from "../components/leagues/LeagueTable";
 import TopScorers from "../components/leagues/TopScorers";
 import RecentMatches from "../components/leagues/RecentMatches";
 import UpcomingFixtures from "../components/leagues/UpcomingFixtures";
+import UclMatchResults from "../components/leagues/UclMatchResults";
+import { uclStandings } from "../data/uclMockData";
 
 function LeagueDetails() {
   const { leagueId } = useParams();
@@ -72,6 +74,8 @@ function LeagueDetails() {
 
   const { league, standings, topScorers, recentMatches, upcomingFixtures, availableSeasons, currentSeason } = data;
 
+  const displayStandings = leagueId === 'ucl' ? uclStandings : (standings || []);
+
   return (
     <div className="league-details-page">
       {/* Banner */}
@@ -88,7 +92,7 @@ function LeagueDetails() {
       {/* Standings + Top Scorers */}
       <div className="league-dashboard">
         <div className="dashboard-left">
-          <LeagueTable standings={standings || []} leagueName={league.name} />
+          <LeagueTable standings={displayStandings} leagueName={league.name} />
         </div>
 
         <div className="dashboard-right">
@@ -96,16 +100,20 @@ function LeagueDetails() {
         </div>
       </div>
 
-      {/* Recent Matches + Upcoming Fixtures */}
-      <div className="league-dashboard">
-        <div className="dashboard-left">
-          <RecentMatches matches={recentMatches || []} />
-        </div>
+      {/* Recent Matches + Upcoming Fixtures (for other leagues) OR UCL Match Results */}
+      {leagueId === 'ucl' ? (
+        <UclMatchResults />
+      ) : (
+        <div className="league-dashboard">
+          <div className="dashboard-left">
+            <RecentMatches matches={recentMatches || []} />
+          </div>
 
-        <div className="dashboard-right">
-          <UpcomingFixtures fixtures={upcomingFixtures || []} />
+          <div className="dashboard-right">
+            <UpcomingFixtures fixtures={upcomingFixtures || []} />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

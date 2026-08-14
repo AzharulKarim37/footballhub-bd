@@ -38,7 +38,7 @@ export const getLeagueById = async (req, res) => {
 
     // Fetch standings
     const [standings] = await db.query(
-      "SELECT * FROM league_standings WHERE league_id = ? AND season = ? ORDER BY points DESC, gd DESC",
+      "SELECT * FROM league_standings WHERE league_id = ? AND season = ? ORDER BY group_name ASC, points DESC, gd DESC",
       [id, targetSeason]
     );
 
@@ -46,6 +46,7 @@ export const getLeagueById = async (req, res) => {
     const formattedStandings = standings.map((item, index) => ({
       ...item,
       position: index + 1,
+      group_name: item.group_name || 'Group 1',
       form: item.form ? item.form.split(",") : ["W", "W", "D", "W", "W"],
     }));
 
@@ -257,10 +258,10 @@ export const deleteLeague = async (req, res) => {
 export const addStanding = async (req, res) => {
   const { id } = req.params;
   try {
-    const { position, club, played, won, drawn, lost, gf, ga, gd, points, form, season } = req.body;
+    const { position, club, played, won, drawn, lost, gf, ga, gd, points, form, season, group_name } = req.body;
     await db.query(
-      `INSERT INTO league_standings (league_id, position, club, played, won, draw, lost, gf, ga, gd, points, form, season) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [id, position, club, played, won, drawn, lost, gf, ga, gd, points, Array.isArray(form) ? form.join(',') : form, season || '2025-26']
+      `INSERT INTO league_standings (league_id, position, club, played, won, draw, lost, gf, ga, gd, points, form, season, group_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [id, position, club, played, won, drawn, lost, gf, ga, gd, points, Array.isArray(form) ? form.join(',') : form, season || '2025-26', group_name || 'Group 1']
     );
     res.status(201).json({ message: 'Standing added' });
   } catch (error) {
@@ -272,10 +273,10 @@ export const addStanding = async (req, res) => {
 export const updateStanding = async (req, res) => {
   const { standingId } = req.params;
   try {
-    const { position, club, played, won, drawn, lost, gf, ga, gd, points, form, season } = req.body;
+    const { position, club, played, won, drawn, lost, gf, ga, gd, points, form, season, group_name } = req.body;
     await db.query(
-      `UPDATE league_standings SET position=?, club=?, played=?, won=?, draw=?, lost=?, gf=?, ga=?, gd=?, points=?, form=?, season=? WHERE id=?`,
-      [position, club, played, won, drawn, lost, gf, ga, gd, points, Array.isArray(form) ? form.join(',') : form, season || '2025-26', standingId]
+      `UPDATE league_standings SET position=?, club=?, played=?, won=?, draw=?, lost=?, gf=?, ga=?, gd=?, points=?, form=?, season=?, group_name=? WHERE id=?`,
+      [position, club, played, won, drawn, lost, gf, ga, gd, points, Array.isArray(form) ? form.join(',') : form, season || '2025-26', group_name || 'Group 1', standingId]
     );
     res.json({ message: 'Standing updated' });
   } catch (error) {

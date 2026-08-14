@@ -1,6 +1,10 @@
+import { useState } from "react";
 import "./LeagueTable.css";
 
 function LeagueTable({ standings, leagueName }) {
+  const [activeGroup, setActiveGroup] = useState("Group 1");
+  const isUcl = leagueName && (leagueName.toLowerCase().includes('ucl') || leagueName.toLowerCase().includes('champions league'));
+  
   const getRowClass = (position) => {
     if (!leagueName) return '';
     const name = leagueName.toLowerCase();
@@ -18,6 +22,30 @@ function LeagueTable({ standings, leagueName }) {
       <h2 className="section-title">
         League Standings
       </h2>
+
+      {/* GROUP TABS */}
+      {!isUcl && (
+        <div style={{display:'flex', gap:'8px', marginBottom:'16px'}}>
+          {['Group 1','Group 2'].map(g => (
+            <button
+              key={g}
+              onClick={() => setActiveGroup(g)}
+              style={{
+                padding: '6px 18px',
+                borderRadius: '20px',
+                border: '1px solid',
+                cursor: 'pointer',
+                fontWeight: '600',
+                fontSize: '13px',
+                transition: 'all 0.2s',
+                background: activeGroup === g ? '#C8FF2E' : 'transparent',
+                color: activeGroup === g ? '#102417' : '#C8FF2E',
+                borderColor: '#C8FF2E',
+              }}
+            >{g}</button>
+          ))}
+        </div>
+      )}
 
       <div className="table-container">
 
@@ -47,7 +75,6 @@ function LeagueTable({ standings, leagueName }) {
 
               <th>Pts</th>
 
-              <th>Form</th>
 
             </tr>
 
@@ -55,11 +82,13 @@ function LeagueTable({ standings, leagueName }) {
 
           <tbody>
 
-            {standings.map((team) => (
+            {standings
+              .filter(team => isUcl || (team.group_name || 'Group 1') === activeGroup)
+              .map((team, index) => (
 
-              <tr key={team.position} className={getRowClass(team.position)}>
+              <tr key={team.id || index} className={getRowClass(team.position)}>
 
-                <td>{team.position}</td>
+                <td>{team.position || index + 1}</td>
 
                 <td className="club-name">
 
@@ -94,27 +123,6 @@ function LeagueTable({ standings, leagueName }) {
 
                 </td>
 
-                <td>
-
-                  <div className="form-column">
-
-                    {team.form.map((result, index) => (
-
-                      <span
-                        key={index}
-                        className={`form ${result}`}
-                      >
-
-                        {result}
-
-                      </span>
-
-                    ))}
-
-                  </div>
-
-                </td>
-
               </tr>
 
             ))}
@@ -124,6 +132,23 @@ function LeagueTable({ standings, leagueName }) {
         </table>
 
       </div>
+
+      {isUcl && (
+        <div className="ucl-legend">
+          <div className="legend-item">
+            <span className="legend-color ucl-ro16-bg"></span>
+            <span>1-8: Direct Qualification to Round of 16</span>
+          </div>
+          <div className="legend-item">
+            <span className="legend-color ucl-playoff-bg"></span>
+            <span>9-24: Knockout Round Play-offs</span>
+          </div>
+          <div className="legend-item">
+            <span className="legend-color ucl-eliminated-bg"></span>
+            <span>25-36: Eliminated</span>
+          </div>
+        </div>
+      )}
 
     </section>
   );

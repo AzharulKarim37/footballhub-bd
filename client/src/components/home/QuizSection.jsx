@@ -45,23 +45,7 @@ function QuizSection() {
             ⚽
           </div>
 
-          <div className="quiz-card-small">
 
-            <span className="quiz-check">
-              ✓
-            </span>
-
-            <div>
-              <strong>
-                10 Questions
-              </strong>
-
-              <small>
-                One football challenge
-              </small>
-            </div>
-
-          </div>
 
         </div>
 

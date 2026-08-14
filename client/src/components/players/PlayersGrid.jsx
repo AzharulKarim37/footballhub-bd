@@ -14,7 +14,7 @@ const playerImageMap = {
   "Sohel Rana": sohel,
 };
 
-function PlayersGrid() {
+function PlayersGrid({ search = "" }) {
   const [playerList, setPlayerList] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -35,6 +35,17 @@ function PlayersGrid() {
       });
   }, []);
 
+  /* Filter by name, club, or position */
+  const query = search.trim().toLowerCase();
+  const filtered = query
+    ? playerList.filter(
+        (p) =>
+          p.name?.toLowerCase().includes(query) ||
+          p.club?.toLowerCase().includes(query) ||
+          p.position?.toLowerCase().includes(query)
+      )
+    : playerList;
+
   return (
     <section
       style={{
@@ -47,6 +58,17 @@ function PlayersGrid() {
         <div style={{ textAlign: "center", color: "#00ff87", fontSize: "18px" }}>
           Loading Players...
         </div>
+      ) : filtered.length === 0 ? (
+        <div
+          style={{
+            textAlign: "center",
+            color: "#64748b",
+            fontSize: "16px",
+            paddingTop: "40px",
+          }}
+        >
+          No players found for &ldquo;<strong style={{ color: "#94a3b8" }}>{search}</strong>&rdquo;.
+        </div>
       ) : (
         <div
           style={{
@@ -57,7 +79,7 @@ function PlayersGrid() {
             gap: "30px",
           }}
         >
-          {playerList.map((player) => (
+          {filtered.map((player) => (
             <PlayerCard key={player.id} player={player} />
           ))}
         </div>
